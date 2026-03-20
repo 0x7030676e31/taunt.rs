@@ -1,0 +1,6 @@
+- [Rust](https://rust-lang.org/): the backend programming language
+  - [ActixWeb](https://actix.rs/): the web framework
+- [Nix](https://nix.dev/): package manager
+  - [Snowfall Lib](https://snowfall.org/guides/lib/quickstart/): a library for setting up the flake structure
+  - [`rust-overlay`](https://github.com/oxalica/rust-overlay): a nixpkgs overlay for binary distributed rust toolchains
+  - [Crane](https://crane.dev/): a library for incremental & composable building of cargo projects
