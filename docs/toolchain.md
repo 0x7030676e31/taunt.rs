@@ -4,6 +4,7 @@
   - [Snowfall Lib](https://snowfall.org/guides/lib/quickstart/): a library for setting up the flake structure
   - [`rust-overlay`](https://github.com/oxalica/rust-overlay): a nixpkgs overlay for binary distributed rust toolchains
   - [Crane](https://crane.dev/): a library for incremental & composable building of cargo projects
+  - [`bun2nix`](https://github.com/nix-community/bun2nix): a tool for packaging bun projects with nix
 - [TypeScript](https://www.typescriptlang.org/): the frontend programming language
 - [SolidJS](https://www.solidjs.com/): the frontend framework
   - [Solid Router](https://github.com/solidjs/solid-router): the routing library
