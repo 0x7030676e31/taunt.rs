@@ -1,4 +1,8 @@
-{ pkgs, inputs, ... }:
+{
+  pkg-config, openssl,
+  pkgs, inputs,
+  ...
+}:
 
 let
   crane = (inputs.crane.mkLib pkgs)
@@ -9,12 +13,14 @@ let
     )
   ;
 
-  artifacts = crane.buildDepsOnly commonArgs;
-
   commonArgs = {
     src = crane.cleanCargoSource ./.;
     strictDeps = true;
+    nativeBuildInputs = [ pkg-config openssl ];
+    PKG_CONFIG_PATH = "${pkgs.openssl.dev}/lib/pkgconfig";
   };
+
+  artifacts = crane.buildDepsOnly commonArgs;
 
 in
   crane.buildPackage (commonArgs // {
