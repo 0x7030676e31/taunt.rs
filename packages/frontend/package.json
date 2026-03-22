@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "postinstall": "bun2nix -o bun.nix"
   },
   "dependencies": {
     "@solidjs/router": "^0.16.1",
