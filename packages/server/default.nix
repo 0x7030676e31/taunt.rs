@@ -7,7 +7,7 @@
 let
   crane = (inputs.crane.mkLib pkgs)
     .overrideToolchain (p: 
-      p.rust-bin.stable.latest.default.override {
+      p.rust-bin.nightly.latest.default.override {
         targets = [ "x86_64-pc-windows-gnu" ];
       }
     )
