@@ -33,7 +33,8 @@ pub fn parse(
     configuration_file_path.try_as_provided().map_or_else(
         || Ok(None),
         |opt| {
-            let file = File::open(opt.value.as_path()).map_err(ConfigurationError::IOError)?;
+            let file = File::open(opt.value.as_path())
+                .map_err(|err| ConfigurationError::IOErrorWith(opt.value.to_path_buf(), err))?;
             static REASON: &'static str = formatcp!(
                 "\
                     the size of the provided configuration file is either too big (more than {}) \
@@ -56,10 +57,16 @@ pub fn parse(
                 .and_then(|mut f| {
                     let mut contents = String::new();
                     f.read_to_string(&mut contents)
-                        .map_err(ConfigurationError::IOError)
+                        .map_err(|err| {
+                            ConfigurationError::IOErrorWith(opt.value.to_path_buf(), err)
+                        })
                         .and_then(|_| {
-                            toml::from_str(contents.as_str())
-                                .map_err(ConfigurationError::DeserializationError)
+                            toml::from_str(contents.as_str()).map_err(|err| {
+                                ConfigurationError::ErrorWhileParsingConfig(
+                                    opt.value.to_path_buf(),
+                                    err,
+                                )
+                            })
                         })
                         .map(|v| Some((opt, v)))
                 })

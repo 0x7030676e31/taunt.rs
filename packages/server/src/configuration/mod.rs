@@ -11,13 +11,26 @@ mod env_variables;
 /// configuration file, an environment variable etc.
 #[derive(Clone, Debug)]
 pub enum Source {
+    /// A CLI argument source, described by its name and whether it provided the default value or
+    /// not
     CLIArgument(&'static str, bool),
+    /// An environment variable source, identified by the variable's name
     EnvVariable(&'static str),
+    /// An option inside a TOML configuration file. The filename is stored inside an `Rc` because
+    /// many options may share it as part of their source, in which case the path itself will be
+    /// living in the same structure as the other options, creating a cyclic dependency of the
+    /// structure that Rust's references can't yet deal with.
+    ///
+    /// The second parameter is the name of the option as it's defined in the file.
     TomlFileOption(Rc<PathBuf>, &'static str),
+    /// The source of all default values.
     Default,
 }
 
 impl Source {
+    /// Constructs a `String` representation of where this specific `Source` may be set the value
+    /// of. This is used to improve the error message of the
+    /// `ConfigurationError::MissingRequiredOption` error.
     fn definition_site_string(&self) -> String {
         use Source::*;
         match self {
@@ -28,6 +41,7 @@ impl Source {
         }
     }
 
+    /// A human readable representation of what this source is.
     fn source_string(&self) -> String {
         use Source::*;
         match self {
@@ -45,14 +59,20 @@ impl Source {
     }
 }
 
+/// A trace of `Source`s that were used to provide the value of the option, each following one
+/// overriding the one before. Used for diagnostics.
 #[derive(Clone, Debug)]
 pub struct OverridingHistory(Vec<Source>);
 
 impl OverridingHistory {
+    /// The initial point of construction of an `OverridingHistory`: just a single source
     fn with_just(source: Source) -> OverridingHistory {
         OverridingHistory(vec![source])
     }
 
+    /// The plain english representation of what happened to the option to make it have its current
+    /// value. You're expected to put something like "the option <a> was provided by " in front of
+    /// the resulting string to make a complete sentence.
     fn plain_english(&self) -> String {
         self.0
             .iter()
@@ -62,12 +82,19 @@ impl OverridingHistory {
     }
 }
 
+/// An option that has been provided a value.
 pub struct ProvidedOption<T> {
+    /// The value of the option.
     pub value: T,
+    /// The how it came to be.
     pub overriding_history: OverridingHistory,
 }
 
 impl<T> ProvidedOption<T> {
+    /// Builds a human readable representation of the value and its history.
+    /// The explicit `f` argument is used for visualizing the value since the `Display` trait
+    /// doesn't work for every kind of value and in practice it turned out that most options have
+    /// to have a separate representation scheme anyways.
     fn show_through(&self, f: impl FnOnce(&T) -> String) -> String {
         use textwrap::{fill, indent};
         format!(
@@ -90,6 +117,8 @@ impl<T> ProvidedOption<T> {
     }
 }
 
+/// Uses `ProvidedOption::show_through` under the hood, supplying it with a trivial `format!`
+/// invocation.
 impl<T: Display> Display for ProvidedOption<T> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "{}", self.show_through(|v| format!("{}", v)),)
@@ -98,21 +127,30 @@ impl<T: Display> Display for ProvidedOption<T> {
 
 /// An optionally present configuration option with the source that defined it.
 enum ConfigurationOption<T> {
+    /// A successfully provided option
     Provided(ProvidedOption<T>),
+    /// A missing option that zero or more `Source`s have failed to provide.
+    /// This vector only consists of sources that actually, in principle, can provide the value for
+    /// this option, but weren't supplied with any. It is used in diagnostics to show the available
+    /// methods of supplied a value for the missing option.
     Missing { queried_sources: Vec<Source> },
 }
 
 impl<T> ConfigurationOption<T> {
+    /// An option that nothing provided and which has no value.
     fn missing() -> Self {
         ConfigurationOption::Missing {
             queried_sources: vec![],
         }
     }
 
+    /// An option the value of which came from the `Default` source.
     fn default(value: T) -> Self {
         ConfigurationOption::Provided(ProvidedOption { value, overriding_history: OverridingHistory::with_just(Source::Default) })
     }
 
+    /// Uses the optional `value` argument as the initial source of the option.
+    /// The `source` parameter specifies its kind.
     fn via(source: Source, value: Option<T>) -> Self {
         use ConfigurationOption::*;
         match value {
@@ -126,6 +164,10 @@ impl<T> ConfigurationOption<T> {
         }
     }
 
+    /// Attempts to treat the option as if it was provided.
+    /// Reports a `ConfigurationError` otherwise, with the `option_name` parameter used as in the
+    /// error message as the iternal name of this configuration option not tied to any specific
+    /// source.
     fn required_as(
         self,
         option_name: &'static str,
@@ -142,6 +184,8 @@ impl<T> ConfigurationOption<T> {
         }
     }
 
+    /// Attempts to treat the option as if it was provided.
+    /// Returns `None` if it wasn't.
     fn optional(self) -> Option<ProvidedOption<T>> {
         use ConfigurationOption::*;
         match self {
@@ -150,7 +194,8 @@ impl<T> ConfigurationOption<T> {
         }
     }
 
-    /// Merges the two options, prioritising the `other` one
+    /// Merges the two options, prioritising the value of the `other` one.
+    /// The histories of the two are concatenated.
     fn override_with(self, other: Self) -> Self {
         use ConfigurationOption::*;
         match other {
@@ -231,6 +276,9 @@ pub struct AppConfiguration {
     pub stripe_api_key: ProvidedOption<String>,
 }
 
+/// A representation of the configuration that should be safe to share in the logs.
+/// Sensitive data is obscured as much as possible while still containing some information useful
+/// for understanding what's going on with the configuration.
 impl Display for AppConfiguration {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         self.configuration_file_path
@@ -254,14 +302,15 @@ impl Display for AppConfiguration {
                     .collect::<String>()
             )
         }
+        // Only the first 16 digits of the Sha256 prefix of the API keys is shown
         writeln!(
             f,
-            "database_key (hash prefix): {}",
+            "database_key (sha256 hash prefix): {}",
             self.database_key.show_through(hash_prefix),
         )?;
         write!(
             f,
-            "stripe_api_key (hash prefix): {}",
+            "stripe_api_key (sha256 hash prefix): {}",
             self.stripe_api_key.show_through(hash_prefix),
         )?;
         Ok(())
@@ -271,12 +320,14 @@ impl Display for AppConfiguration {
 /// An error in the process of building the app configuration
 #[derive(Debug, thiserror::Error)]
 pub enum ConfigurationError {
+    /// None of the providers that can handle a required option were used to provide it
     #[error(
         "the required configuration option {} is missing. Use {} to provide it.",
         .0,
         .1.iter().map(Source::definition_site_string).conjunctive_join_custom(", ", " or "))
     ]
     MissingRequiredOption(&'static str, Vec<Source>),
+    /// The option was provided a value that breaks its invariant.
     #[error(
         "the option {option_name} was provided the value\n\n\
         {provided_value_representation}\n\n\
@@ -286,20 +337,31 @@ pub enum ConfigurationError {
 
     )]
     ProvidedInvalidValue {
+        /// The internal name of the configuration option, not tied to its definition source
         option_name: &'static str,
+        /// How the provided value looks like
         provided_value_representation: String,
+        /// What's wrong with the provided value, phrased to be used in error messages of the form
+        /// "the value is invalid *because* [reason]". As such it's best to avoid starting it with
+        /// its own sentence since that will break the grammar. Using more sentences after that,
+        /// however, is allowed and will look natural.
         reason: &'static str,
+        /// The trace of the value
         overriding_history: OverridingHistory,
     },
-    #[error(transparent)]
-    IOError(std::io::Error),
+    /// An I/O error that occured while working with some specified file, most likely the
+    /// configuration one.
+    #[error("I/O error while working with file {}: {}", .0.to_string_lossy(), .1)]
+    IOErrorWith(PathBuf, std::io::Error),
     #[error(transparent)]
     EnvyError(envy::Error),
-    #[error(transparent)]
-    DeserializationError(toml::de::Error),
+    /// An error in configuration file's deserialization process.
+    #[error("ran into issues while parsing {}:\n{}", .0.to_string_lossy(), .1)]
+    ErrorWhileParsingConfig(PathBuf, toml::de::Error),
 }
 
 impl ConfigurationError {
+    /// Prints the error to the standard output and exists
     fn report_and_exit(self) -> ! {
         println!(
             "{}",
@@ -309,7 +371,8 @@ impl ConfigurationError {
     }
 }
 
-impl<'a> ConfigurationOptions {
+impl ConfigurationOptions {
+    /// Only the default values
     pub fn just_the_defaults() -> Self {
         ConfigurationOptions {
             configuration_file_path: ConfigurationOption::missing(),
@@ -343,6 +406,9 @@ impl<'a> ConfigurationOptions {
     }
 }
 
+/// Queries the configuration providers and tries to build the configuration.
+/// Many things can go wrong in the process, check the `ConfigurationError` type to learn more
+/// about them.
 pub fn build() -> Result<AppConfiguration, ConfigurationError> {
     let env_vars = env_variables::parse()?;
     let cli_args = cli_arguments::parse_or_exit();
@@ -367,6 +433,7 @@ pub fn build() -> Result<AppConfiguration, ConfigurationError> {
         .build()
 }
 
+/// A shortcut for invoking `build()` and exiting with error on failure.
 pub fn build_or_exit_with_error() -> AppConfiguration {
     build()
         .map_err(ConfigurationError::report_and_exit)
