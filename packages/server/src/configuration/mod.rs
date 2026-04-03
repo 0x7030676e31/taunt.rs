@@ -133,6 +133,9 @@ impl<T> ProvidedOption<T> {
         self,
         f: impl FnOnce(&T) -> Result<(), ConfigurationError>,
     ) -> Result<Self, ConfigurationError> {
+        if cfg!(feature = "dev") {
+            return Ok(self);
+        }
         f(&self.value).map(|()| self)
     }
 
@@ -485,11 +488,31 @@ impl ConfigurationOptions {
             configuration_file_path: ConfigurationOption::missing(),
             log_level: ConfigurationOption::default(log::Level::Info),
             database_url: ConfigurationOption::missing(),
-            port: ConfigurationOption::missing(),
-            host: ConfigurationOption::missing(),
-            database_key: ConfigurationOption::missing(),
-            stripe_api_key: ConfigurationOption::missing(),
-            captcha_private_key: ConfigurationOption::missing(),
+            port: if cfg!(feature = "dev") {
+                ConfigurationOption::default(8080)
+            } else {
+                ConfigurationOption::missing()
+            },
+            host: if cfg!(feature = "dev") {
+                ConfigurationOption::default("localhost".into())
+            } else {
+                ConfigurationOption::missing()
+            },
+            database_key: if cfg!(feature = "dev") {
+                ConfigurationOption::default("bruh295842958".into())
+            } else {
+                ConfigurationOption::missing()
+            },
+            stripe_api_key: if cfg!(feature = "dev") {
+                ConfigurationOption::default("stripe_test_a54ef5fd5aefwhatever".into())
+            } else {
+                ConfigurationOption::missing()
+            },
+            captcha_private_key: if cfg!(feature = "dev") {
+                ConfigurationOption::default("bru2@#_$_h295842958".into())
+            } else {
+                ConfigurationOption::missing()
+            },
             path_to_static_assets: ConfigurationOption::missing(),
         }
     }
@@ -568,22 +591,6 @@ impl ConfigurationOptions {
 }
 
 fn is_a_nix_derivation(path: &PathBuf) -> Result<(), ConfigurationError> {
-    // Try to validate using nix first, fall back to traditional check if nix is not available
-    match try_validate_with_nix(path) {
-        Ok(()) => Ok(()),
-        Err(ConfigurationError::XShellError(_)) => {
-            // Nix not available, fall back to traditional validation
-            validate_path_traditional(path)
-        }
-        Err(ConfigurationError::UnexpectedOutputFromExternalCommand { .. }) => {
-            // Nix command failed (path not in store or unexpected output), fall back to traditional validation
-            validate_path_traditional(path)
-        }
-        Err(e) => Err(e), // Other errors should be propagated
-    }
-}
-
-fn try_validate_with_nix(path: &PathBuf) -> Result<(), ConfigurationError> {
     #[derive(serde::Deserialize)]
     #[serde(rename_all = "camelCase")]
     struct NixPathInfoOutput {
@@ -648,55 +655,6 @@ fn try_validate_with_nix(path: &PathBuf) -> Result<(), ConfigurationError> {
                 Some(Box::new(err)),
             )
         })?;
-    Ok(())
-}
-
-fn validate_path_traditional(path: &PathBuf) -> Result<(), ConfigurationError> {
-    // Traditional validation: equivalent checks to nix validation for non-nix systems
-
-    // 1. Check that the path exists
-    if !path.exists() {
-        return Err(ConfigurationError::ProvidedInvalidValue {
-            option_name: "path_to_static_assets",
-            provided_value_representation: path.to_string_lossy().to_string(),
-            reason: "the path does not exist",
-            overriding_history: OverridingHistory::with_just(Source::Default),
-        });
-    }
-
-    // 2. Check that it's a directory
-    if !path.is_dir() {
-        return Err(ConfigurationError::ProvidedInvalidValue {
-            option_name: "path_to_static_assets",
-            provided_value_representation: path.to_string_lossy().to_string(),
-            reason: "the path is not a directory",
-            overriding_history: OverridingHistory::with_just(Source::Default),
-        });
-    }
-
-    // 3. Check that the directory is readable by attempting to read it
-    fs::read_dir(path).map_err(|e| ConfigurationError::IOErrorWith(path.clone(), e))?;
-
-    // 4. Check that required static assets exist (index.html must be present)
-    let index_html_path = path.join("index.html");
-    if !index_html_path.exists() {
-        return Err(ConfigurationError::ProvidedInvalidValue {
-            option_name: "path_to_static_assets",
-            provided_value_representation: path.to_string_lossy().to_string(),
-            reason: "it does not contain the required 'index.html' file",
-            overriding_history: OverridingHistory::with_just(Source::Default),
-        });
-    }
-
-    if !index_html_path.is_file() {
-        return Err(ConfigurationError::ProvidedInvalidValue {
-            option_name: "path_to_static_assets",
-            provided_value_representation: path.to_string_lossy().to_string(),
-            reason: "the 'index.html' is not a regular file",
-            overriding_history: OverridingHistory::with_just(Source::Default),
-        });
-    }
-
     Ok(())
 }
 
