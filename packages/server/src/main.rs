@@ -7,10 +7,10 @@ use log::{error, info, warn};
 
 use crate::configuration::AppConfiguration;
 
+mod api;
 mod app;
 mod configuration;
 mod database;
-mod routes;
 
 #[post("/")]
 async fn index_page(config: web::Data<AppConfiguration>) -> HttpResponse {
