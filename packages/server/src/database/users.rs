@@ -220,7 +220,7 @@ impl From<CreateUserError> for ErrorResponse {
     fn from(error: CreateUserError) -> Self {
         match error {
             CreateUserError::EmailConflict => ErrorResponseBuilder::conflict()
-                .set_status("USER_EMAIL_CONFLICT") // [API ERROR]
+                .set_status("REGISTER_USER_EMAIL_CONFLICT") // [API ERROR]
                 .set_message("A user with the provided email already exists.")
                 .build(),
             CreateUserError::DatabaseError(e) => ErrorResponseBuilder::database_error()
