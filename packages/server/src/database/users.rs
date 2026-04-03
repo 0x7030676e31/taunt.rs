@@ -1,7 +1,6 @@
 use std::{error::Error, fmt, str::FromStr};
 
 use chrono::{DateTime, TimeZone, Utc};
-use serde::Serialize;
 use sqlx::{ColumnIndex, FromRow, Row, SqlitePool, decode, types};
 
 #[derive(Debug)]
@@ -15,8 +14,6 @@ impl fmt::Display for RoleParseError {
 
 impl Error for RoleParseError {}
 
-#[derive(Serialize)]
-#[serde(rename_all = "lowercase")]
 pub enum UserRole {
     Admin,
     Volunteer,
@@ -34,34 +31,22 @@ impl FromStr for UserRole {
     }
 }
 
-impl UserRole {
-    pub fn as_str(&self) -> &'static str {
-        match self {
+impl From<UserRole> for &str {
+    fn from(role: UserRole) -> Self {
+        match role {
             UserRole::Admin => "admin",
             UserRole::Volunteer => "volunteer",
         }
     }
 }
 
-#[derive(Serialize)]
-#[serde(rename_all = "camelCase")]
 pub struct User {
     user_id: u32,
     email: String,
     password_hash: String,
     role: UserRole,
-    #[serde(serialize_with = "serialize_timestamp")]
     created_at_ms: DateTime<Utc>,
-    #[serde(serialize_with = "serialize_timestamp")]
     updated_at_ms: DateTime<Utc>,
-}
-
-fn serialize_timestamp<S>(date: &DateTime<Utc>, serializer: S) -> Result<S::Ok, S::Error>
-where
-    S: serde::Serializer,
-{
-    let timestamp_ms = date.timestamp_millis();
-    serializer.serialize_i64(timestamp_ms)
 }
 
 impl<'a, R: Row> FromRow<'a, R> for User
