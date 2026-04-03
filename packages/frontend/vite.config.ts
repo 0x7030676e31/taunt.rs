@@ -6,7 +6,8 @@ export default defineConfig({
     plugins: [solid()],
     resolve: {
         alias: {
-            "@": path.resolve(__dirname, "src")
+            "@": path.resolve(__dirname, "src"),
+            palette: path.resolve(__dirname, "src/palette.scss"),
         }
     }
 })
