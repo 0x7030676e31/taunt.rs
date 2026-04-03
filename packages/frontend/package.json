@@ -10,14 +10,15 @@
     "postinstall": "bun2nix -o bun.nix"
   },
   "dependencies": {
+    "@solid-primitives/i18n": "^2.2.1",
     "@solidjs/router": "^0.16.1",
     "sass": "^1.98.0",
     "solid-icons": "^1.2.0",
     "solid-js": "^1.9.11"
   },
   "devDependencies": {
-    "@types/node": "^24.12.0",
-    "typescript": "~5.9.3",
+    "@types/node": "^25.5.2",
+    "typescript": "^6.0.2",
     "vite": "^8.0.1",
     "vite-plugin-solid": "^2.11.11"
   },
