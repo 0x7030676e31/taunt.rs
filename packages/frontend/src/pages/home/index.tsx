@@ -180,8 +180,12 @@ export default function Home() {
                                 value={message()}
                                 class={styles.donateLabel}
                                 inputClass={styles.donateInput}
+                                maxlength={512}
                                 onInput={(e) => setMessage(e.currentTarget.value)}
                             />
+                            <div class={styles.charCounter}>
+                                {message().length} / 512
+                            </div>
                         </div>
 
                         <button type="submit" class={styles.submitDonateBtn}>
