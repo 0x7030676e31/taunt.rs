@@ -293,10 +293,18 @@ impl<T> ConfigurationOption<T> {
 pub struct ConfigurationOptions {
     configuration_file_path: ConfigurationOption<Rc<PathBuf>>,
     log_level: ConfigurationOption<log::Level>,
+    port: ConfigurationOption<u16>,
+    host: ConfigurationOption<String>,
+    database_url: ConfigurationOption<String>,
     database_key: ConfigurationOption<String>,
     stripe_api_key: ConfigurationOption<String>,
     captcha_private_key: ConfigurationOption<String>,
     path_to_static_assets: ConfigurationOption<PathBuf>,
+}
+
+/// A collection of paths to static assets that have been checked for existance on server startup
+pub struct StaticAssetPaths {
+    index: PathBuf,
 }
 
 /// The configuration of the app
@@ -305,14 +313,21 @@ pub struct AppConfiguration {
     pub configuration_file_path: Option<ProvidedOption<Rc<PathBuf>>>,
     /// The log level for the server to use
     pub log_level: ProvidedOption<log::Level>,
+    /// The port for the server to run on
+    pub port: ProvidedOption<u16>,
+    /// The host for the server to use
+    pub host: ProvidedOption<String>,
+    /// The URL of the database
+    pub database_url: ProvidedOption<String>,
     /// The key to the database
-    pub database_key: ProvidedOption<String>,
+    pub database_key: Option<ProvidedOption<String>>,
     /// The Stripe API key
     pub stripe_api_key: ProvidedOption<String>,
     /// The CAPTCHA private key
     pub captcha_private_key: ProvidedOption<String>,
     /// The path to the static assets directory
-    pub path_to_static_assets: ProvidedOption<PathBuf>,
+    pub static_assets_dir: ProvidedOption<PathBuf>,
+    pub static_asset_paths: StaticAssetPaths,
 }
 
 /// A representation of the configuration that should be safe to share in the logs.
@@ -320,20 +335,18 @@ pub struct AppConfiguration {
 /// for understanding what's going on with the configuration.
 impl Display for AppConfiguration {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        self.configuration_file_path
-            .as_ref()
-            .map(|opt| {
-                writeln!(
-                    f,
-                    "configuration_file_path: {}",
-                    opt.show_through(|v| v.to_string_lossy().to_string())
-                )
-            })
-            .transpose()?;
+        writeln!(
+            f,
+            "configuration_file_path: {}",
+            self.configuration_file_path
+                .as_ref()
+                .map(|opt| opt.show_through(|v| v.to_string_lossy().to_string()))
+                .unwrap_or("(not provided)".into())
+        )?;
         writeln!(
             f,
             "path_to_static_assets: {}",
-            self.path_to_static_assets
+            self.static_assets_dir
                 .show_through(|v| v.to_string_lossy().to_string())
         )?;
         writeln!(f, "log_level: {}", self.log_level)?;
@@ -347,11 +360,17 @@ impl Display for AppConfiguration {
                     .collect::<String>()
             )
         }
+        writeln!(f, "database_url: {}", self.database_url,)?;
+        writeln!(f, "port: {}", self.port)?;
+        writeln!(f, "host: {}", self.host)?;
         // Only the first 16 digits of the Sha256 prefix of the sensitive keys is shown
         writeln!(
             f,
             "database_key (sha256 hash prefix): {}",
-            self.database_key.show_through(hash_prefix),
+            self.database_key
+                .as_ref()
+                .map(|opt| opt.show_through(hash_prefix))
+                .unwrap_or("(not provided)".into()),
         )?;
         write!(
             f,
@@ -428,6 +447,11 @@ pub enum ConfigurationError {
         explanation: &'static str,
         raw_error: Option<Box<dyn Error>>,
     },
+    #[error(
+        "a required static asset was not found in the provided static asset directory: {}",
+        .0.to_string_lossy().to_string(),
+    )]
+    MissingRequiredStaticAsset(PathBuf),
 }
 
 impl ConfigurationError {
@@ -461,6 +485,9 @@ impl ConfigurationOptions {
         ConfigurationOptions {
             configuration_file_path: ConfigurationOption::missing(),
             log_level: ConfigurationOption::default(log::Level::Info),
+            database_url: ConfigurationOption::missing(),
+            port: ConfigurationOption::missing(),
+            host: ConfigurationOption::missing(),
             database_key: ConfigurationOption::missing(),
             stripe_api_key: ConfigurationOption::missing(),
             captcha_private_key: ConfigurationOption::missing(),
@@ -475,9 +502,14 @@ impl ConfigurationOptions {
                 .configuration_file_path
                 .override_with(other.configuration_file_path),
             log_level: self.log_level.override_with(other.log_level),
+            port: self.port.override_with(other.port),
+            host: self.host.override_with(other.host),
+            database_url: self.database_url.override_with(other.database_url),
             database_key: self.database_key.override_with(other.database_key),
             stripe_api_key: self.stripe_api_key.override_with(other.stripe_api_key),
-            captcha_private_key: self.captcha_private_key.override_with(other.captcha_private_key),
+            captcha_private_key: self
+                .captcha_private_key
+                .override_with(other.captcha_private_key),
             path_to_static_assets: self
                 .path_to_static_assets
                 .override_with(other.path_to_static_assets),
@@ -489,29 +521,49 @@ impl ConfigurationOptions {
     ///
     /// May do some I/O do validate the configuration.
     pub fn build(self) -> Result<AppConfiguration, ConfigurationError> {
+        // the assets should live in an immutable nix store path
+        let static_assets_dir = self
+            .path_to_static_assets
+            .required_as("path_to_resources")?
+            .ensure(is_a_nix_derivation)?
+            .validate(|path, overriding_history| {
+                fs::canonicalize(path).map_err(|_| ConfigurationError::ProvidedInvalidValue {
+                    option_name: "path_to_static_assets",
+                    provided_value_representation: path.to_string_lossy().to_string(),
+                    reason: "it's not a path with a canonical representation",
+                    overriding_history: overriding_history.clone(),
+                })
+            })?;
+        macro_rules! asset {
+            ($opt:expr, $name:expr) => {{
+                let path = &$opt.value.join($name);
+                if !path.exists() {
+                    return Err(ConfigurationError::MissingRequiredStaticAsset(path.clone()));
+                }
+                path.to_path_buf()
+            }};
+        }
+        let static_asset_paths = StaticAssetPaths {
+            index: asset!(static_assets_dir, "index.html"),
+        };
         Ok(AppConfiguration {
             // the invariant can't be checked since it comes from within the system itself
             configuration_file_path: self.configuration_file_path.optional(),
             // nothing here, any log level is valid
             log_level: self.log_level.required_as("log_level")?,
+            // let the OS handle the proper ranges for now
+            port: self.port.required_as("port")?,
+            // TODO: switch this and database_url to actual URLs and not `String`s
+            host: self.host.required_as("host")?,
             // TODO: validate these against some kind of schema maybe?
-            database_key: self.database_key.required_as("database_key")?,
+            database_url: self.database_url.required_as("database_key")?,
+            database_key: self.database_key.optional(),
             stripe_api_key: self.stripe_api_key.required_as("stripe_api_key")?,
-            captcha_private_key: self.captcha_private_key.required_as("captcha_private_key")?,
-            // the assets should live in an immutable nix store path
-            path_to_static_assets: self
-                .path_to_static_assets
-                .required_as("path_to_resources")?
-                .ensure(is_a_nix_derivation)?
-                .validate(|path, overriding_history| {
-                    fs::canonicalize(path)
-                        .map_err(|_| ConfigurationError::ProvidedInvalidValue {
-                            option_name: "path_to_static_assets",
-                            provided_value_representation: path.to_string_lossy().to_string(),
-                            reason: "it's not a path with a canonical representation",
-                            overriding_history: overriding_history.clone(),
-                        })
-                })?,
+            captcha_private_key: self
+                .captcha_private_key
+                .required_as("captcha_private_key")?,
+            static_assets_dir,
+            static_asset_paths,
         })
     }
 }

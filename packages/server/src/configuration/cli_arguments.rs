@@ -48,9 +48,15 @@ pub struct CLIArgs {
     #[arg(short, long)]
     log_level: Option<LogLevelParser>,
     #[arg(short, long)]
+    database_url: Option<String>,
+    #[arg(short, long)]
+    port: Option<u16>,
+    #[arg(short, long)]
+    host: Option<String>,
+    #[arg(short, long)]
     pub config: Option<PathBuf>,
     #[arg(short, long)]
-    pub static_assets: Option<PathBuf>,
+    static_assets: Option<PathBuf>,
 }
 
 impl Into<ConfigurationOptions> for (ArgMatches, CLIArgs) {
@@ -73,6 +79,21 @@ impl Into<ConfigurationOptions> for (ArgMatches, CLIArgs) {
         ConfigurationOptions {
             configuration_file_path: ConfigurationOption::missing(),
             stripe_api_key: ConfigurationOption::missing(),
+            database_url: via_cli(
+                source("database_url"),
+                "--database-url",
+                self.1.database_url,
+            ),
+            port: via_cli(
+                source("port"),
+                "--port",
+                self.1.port,
+            ),
+            host: via_cli(
+                source("host"),
+                "--host",
+                self.1.host,
+            ),
             database_key: ConfigurationOption::missing(),
             captcha_private_key: ConfigurationOption::missing(),
             log_level: via_cli(

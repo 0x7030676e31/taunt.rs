@@ -9,6 +9,9 @@ use crate::configuration::{
 #[derive(serde::Deserialize)]
 pub struct ConfigFileOptions {
     log_level: Option<log::Level>,
+    port: Option<u16>,
+    host: Option<String>,
+    database_url: Option<String>,
     static_assets: Option<PathBuf>,
 }
 
@@ -20,6 +23,9 @@ impl Into<ConfigurationOptions> for (ProvidedOption<Rc<PathBuf>>, ConfigFileOpti
         ConfigurationOptions {
             configuration_file_path: ConfigurationOption::Provided(self.0),
             log_level: ConfigurationOption::via(opt("log_level"), self.1.log_level),
+            port: ConfigurationOption::via(opt("port"), self.1.port),
+            host: ConfigurationOption::via(opt("host"), self.1.host),
+            database_url: ConfigurationOption::via(opt("database_url"), self.1.database_url),
             database_key: ConfigurationOption::missing(),
             stripe_api_key: ConfigurationOption::missing(),
             captcha_private_key: ConfigurationOption::missing(),

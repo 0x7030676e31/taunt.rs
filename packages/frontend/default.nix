@@ -24,6 +24,6 @@ in stdenvNoCC.mkDerivation {
 
   installPhase = ''
     mkdir -p $out/dist
-    cp -R ./dist $out
+    cp -R ./dist/* $out
   '';
 }
