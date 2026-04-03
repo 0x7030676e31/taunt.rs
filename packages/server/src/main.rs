@@ -43,8 +43,7 @@ async fn main() -> io::Result<()> {
             .app_data(config.clone())
             .app_data(users_table.clone())
             .app_data(tokens_table.clone())
-            .service(api::routes())
-            .wrap(Cors)
+            .service(api::routes(config.clone()))
     })
     .bind(host_and_port)?
     .run()

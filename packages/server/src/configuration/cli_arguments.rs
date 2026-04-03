@@ -51,7 +51,7 @@ pub struct CLIArgs {
     database_url: Option<String>,
     #[arg(short, long)]
     port: Option<u16>,
-    #[arg(short, long)]
+    #[arg(long)]
     host: Option<String>,
     #[arg(short, long)]
     pub config: Option<PathBuf>,
