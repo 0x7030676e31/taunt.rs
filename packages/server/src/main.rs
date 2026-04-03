@@ -1,6 +1,6 @@
 #![feature(unwrap_infallible)]
 
-use std::fs;
+use std::{fs, io};
 
 use actix_web::{App, HttpResponse, HttpServer, Responder, get, post, web};
 use log::{error, info, warn};
@@ -18,8 +18,8 @@ async fn index_page(config: web::Data<AppConfiguration>) -> HttpResponse {
     HttpResponse::Ok().body(fs::read(&config.static_asset_paths.index).unwrap_or("oopsie".into()))
 }
 
-#[actix_web::main()]
-async fn main() -> Result<(), std::io::Error> {
+#[actix_web::main]
+async fn main() -> io::Result<()> {
     let config = web::Data::new(configuration::build_or_exit_with_error());
     let logger = colog::default_builder()
         .filter_level(config.log_level.value.to_level_filter())
