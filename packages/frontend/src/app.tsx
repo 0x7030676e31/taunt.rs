@@ -3,6 +3,7 @@ import { type JSX } from "solid-js";
 
 import Home from "./pages/home";
 import Donate from "./pages/donate";
+import Adopt from "./pages/adopt";
 import Login from "./pages/login";
 import Dashboard from "./pages/dashboard";
 import Donations from "./pages/donations";
@@ -26,6 +27,7 @@ export default function App() {
         <Router>
             <Route path="/" component={Home} />
             <Route path="/donate" component={Donate} />
+            <Route path="/adopt" component={Adopt} />
             <Route path="/login" component={Login} />
             <Route path="/dashboard" component={Layout}>
                 <Route path="/" component={Dashboard} />
