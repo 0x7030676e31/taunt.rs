@@ -371,7 +371,7 @@ impl Display for AppConfiguration {
                 .map(|opt| opt.show_through(hash_prefix))
                 .unwrap_or("(not provided)".into()),
         )?;
-        write!(
+        writeln!(
             f,
             "stripe_api_key (sha256 hash prefix): {}",
             self.stripe_api_key.show_through(hash_prefix),
