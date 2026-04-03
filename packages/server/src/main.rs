@@ -9,7 +9,6 @@ use sqlx::{SqlitePool, sqlite::SqliteConnectOptions};
 use crate::{configuration::AppConfiguration, database::users::UsersTable};
 
 mod api;
-mod app;
 mod configuration;
 mod database;
 

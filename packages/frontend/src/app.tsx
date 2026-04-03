@@ -24,8 +24,9 @@ import { I18nProvider } from "./locales/i18n";
 const AppLayout = (props: { children?: JSX.Element }) => {
     return (
         <AccountContextProvider>
-            <Navbar />
-            {props.children}
+            <Navbar>
+                {props.children}
+            </Navbar>
         </AccountContextProvider>
     )
 }
