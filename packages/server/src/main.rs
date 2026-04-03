@@ -1,8 +1,12 @@
 #![feature(unwrap_infallible)]
 
-use actix_web::{get, post, web, App, HttpResponse, HttpServer, Responder};
+use actix_web::{App, HttpResponse, HttpServer, Responder, get, post, web};
 use log::{error, info, warn};
+
+mod api;
+mod app;
 mod configuration;
+mod database;
 
 //#[post("/")]
 //async fn index_page() -> HttpResponse {
