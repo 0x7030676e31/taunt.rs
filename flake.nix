@@ -36,6 +36,6 @@
     inherit inputs;
     overlays = [ (import inputs.rust-overlay) ];
     src = ./.;
-    alias.packages.default = "server";
+    alias.packages.default = "backend";
   };
 }
