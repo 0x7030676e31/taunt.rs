@@ -1,4 +1,4 @@
-import { createContext, type JSX, type Accessor, type Setter, createSignal } from "solid-js";
+import { createContext, type JSX, type Accessor, type Setter, createSignal, useContext } from "solid-js";
 
 export interface AccountContext {
     currentUser: Accessor<Objects.User | null>;
@@ -24,4 +24,13 @@ export function AccountContextProvider(props: AccountProviderProps) {
             {props.children}
         </accountContext.Provider>
     );
+}
+
+export function useAccountContext() {
+    const context = useContext(accountContext);
+    if (!context) {
+        throw new Error("useAccountContext must be used within an AccountContextProvider");
+    }
+
+    return context;
 }

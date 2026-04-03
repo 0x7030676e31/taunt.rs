@@ -1,7 +1,8 @@
 {
+    "login": "Login",
+    "logout": "Logout",
+    "Register": "Register",
     "navbar.home": "Home",
-    "navbar.animals": "Animals",
-    "navbar.donate": "Donate",
-    "navbar.login": "Login",
-    "navbar.register": "Register"
+    "navbar.adopt": "Adopt",
+    "navbar.donate": "Donate"
 }
