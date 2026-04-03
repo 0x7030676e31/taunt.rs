@@ -2538,6 +2538,7 @@ dependencies = [
  "log",
  "ouroboros",
  "rand 0.10.0",
+ "regex",
  "reqwest",
  "serde",
  "serde_json",

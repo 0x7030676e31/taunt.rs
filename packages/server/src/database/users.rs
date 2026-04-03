@@ -205,6 +205,31 @@ impl FromRequest for User {
     }
 }
 
+pub enum CreateUserError {
+    EmailConflict,
+    DatabaseError(sqlx::Error),
+}
+
+impl From<sqlx::Error> for CreateUserError {
+    fn from(err: sqlx::Error) -> Self {
+        CreateUserError::DatabaseError(err)
+    }
+}
+
+impl From<CreateUserError> for ErrorResponse {
+    fn from(error: CreateUserError) -> Self {
+        match error {
+            CreateUserError::EmailConflict => ErrorResponseBuilder::conflict()
+                .set_status("USER_EMAIL_CONFLICT") // [API ERROR]
+                .set_message("A user with the provided email already exists.")
+                .build(),
+            CreateUserError::DatabaseError(e) => ErrorResponseBuilder::database_error()
+                .set_message(format!("An error occurred while creating the user: {e}"))
+                .build(),
+        }
+    }
+}
+
 pub struct UsersTable {
     pool: SqlitePool,
 }
@@ -212,6 +237,66 @@ pub struct UsersTable {
 impl UsersTable {
     pub fn new(pool: SqlitePool) -> Self {
         Self { pool }
+    }
+
+    pub async fn create_user(&self, email: &str, password: &str) -> Result<User, CreateUserError> {
+        let password_hash = Sha256::digest(password.as_bytes());
+        let password_hash_hex = password_hash
+            .iter()
+            .map(|byte| format!("{:02x}", byte))
+            .collect::<String>();
+
+        let now = Utc::now();
+        let now_ms = now.timestamp_millis();
+
+        let mut tx = self.pool.begin().await.map_err(|e| {
+            log::error!("Failed to begin transaction for creating user: {}", e);
+            CreateUserError::DatabaseError(e)
+        })?;
+
+        let result = sqlx::query!("SELECT user_id FROM users WHERE email = ?", email)
+            .fetch_optional(&mut *tx)
+            .await
+            .map_err(|e| {
+                log::error!(
+                    "Failed to check for existing user with email {}: {}",
+                    email,
+                    e
+                );
+                CreateUserError::DatabaseError(e)
+            })?;
+
+        if result.is_some() {
+            return Err(CreateUserError::EmailConflict);
+        }
+
+        let insert_result = sqlx::query!(
+            "INSERT INTO users (email, password_hash, created_at_ms, updated_at_ms) VALUES (?, ?, ?, ?)",
+            email,
+            password_hash_hex,
+            now_ms,
+            now_ms
+        )
+        .execute(&mut *tx)
+        .await
+        .map_err(|e| {
+            log::error!("Failed to insert new user into database: {}", e);
+            CreateUserError::DatabaseError(e)
+        })?;
+
+        let user_id = insert_result.last_insert_rowid() as u32;
+        tx.commit().await.map_err(|e| {
+            log::error!("Failed to commit transaction for creating user: {}", e);
+            CreateUserError::DatabaseError(e)
+        })?;
+
+        Ok(User {
+            user_id,
+            email: email.to_string(),
+            password_hash: password_hash_hex,
+            created_at: now,
+            updated_at: now,
+        })
     }
 
     pub async fn get_user(&self, user_id: u32) -> sqlx::Result<Option<User>> {
