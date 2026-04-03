@@ -1,5 +1,15 @@
 PRAGMA foreign_keys = ON;
 
+CREATE TABLE IF NOT EXISTS donations (
+  donation_id INTEGER PRIMARY KEY AUTOINCREMENT,
+  donor_name TEXT NOT NULL,
+  donor_email TEXT,
+  donor_phone TEXT,
+  amount REAL NOT NULL,
+  message TEXT,
+  created_at_ms INTEGER NOT NULL
+);
+
 CREATE TABLE IF NOT EXISTS animals (
   animal_id INTEGER PRIMARY KEY AUTOINCREMENT,
   name TEXT NOT NULL,
