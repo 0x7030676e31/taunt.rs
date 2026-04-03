@@ -3,10 +3,10 @@
 use actix_web::{App, HttpResponse, HttpServer, Responder, get, post, web};
 use log::{error, info, warn};
 
-mod api;
 mod app;
 mod configuration;
 mod database;
+mod routes;
 
 //#[post("/")]
 //async fn index_page() -> HttpResponse {
