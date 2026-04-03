@@ -1,7 +1,7 @@
 import { useAccountContext } from "@/providers/account";
 import { A } from "@solidjs/router"
 import { useI18n } from "@/locales/i18n";
-import { Show, createSignal } from "solid-js";
+import { Show, batch, createSignal, onMount } from "solid-js";
 import { RiUserFacesAccountCircleLine } from "solid-icons/ri";
 import { AiFillCaretDown } from "solid-icons/ai";
 import type { JSX } from "solid-js";
@@ -12,6 +12,9 @@ import { Portal } from "solid-js/web";
 import TextInput from "@/common/inputs/text-input";
 import PasswordInput from "@/common/inputs/password-input";
 import Burger from "@/common/burger";
+import { FaSolidClose } from "solid-icons/fa";
+import req from "@/req";
+import { addNotification } from "@/notifications";
 
 interface AccountProviderProps {
     children?: JSX.Element | JSX.Element[];
@@ -19,56 +22,15 @@ interface AccountProviderProps {
 
 export default function Navbar(props: AccountProviderProps) {
     const { currentUser } = useAccountContext();
-    const [formMounted, setFormMounted] = createSignal(false);
     const [formVisible, setFormVisible] = createSignal(false);
-    const [mobileMenuMounted, setMobileMenuMounted] = createSignal(false);
     const [mobileMenuVisible, setMobileMenuVisible] = createSignal(false);
-    const [mobileMenuOpen, setMobileMenuOpen] = createSignal(false);
     const [t] = useI18n();
 
-    const openForm = () => {
-        if (formMounted()) {
-            setFormVisible(true);
-            return;
-        }
+    const openForm = () => setFormVisible(true);
+    const closeForm = () => setFormVisible(false);
 
-        setFormMounted(true);
-        requestAnimationFrame(() => setFormVisible(true));
-    };
-
-    const closeForm = () => {
-        setFormVisible(false);
-        window.setTimeout(() => setFormMounted(false), 220);
-    };
-
-    const openMobileMenu = () => {
-        if (mobileMenuMounted()) {
-            setMobileMenuVisible(true);
-            setMobileMenuOpen(true);
-            return;
-        }
-
-        setMobileMenuMounted(true);
-        setMobileMenuOpen(true);
-        requestAnimationFrame(() => {
-            requestAnimationFrame(() => setMobileMenuVisible(true));
-        });
-    };
-
-    const closeMobileMenu = () => {
-        setMobileMenuVisible(false);
-        setMobileMenuOpen(false);
-        window.setTimeout(() => setMobileMenuMounted(false), 260);
-    };
-
-    const toggleMobileMenu = () => {
-        if (mobileMenuVisible()) {
-            closeMobileMenu();
-            return;
-        }
-
-        openMobileMenu();
-    };
+    const closeMobileMenu = () => setMobileMenuVisible(false);
+    const toggleMobileMenu = () => setMobileMenuVisible(prev => !prev);
 
     return (
         <>
@@ -93,68 +55,64 @@ export default function Navbar(props: AccountProviderProps) {
                     </div>
                     <div class={styles.mobileBurger}>
                         <Burger
-                            isOpen={mobileMenuOpen}
+                            isOpen={mobileMenuVisible}
                             onClick={toggleMobileMenu}
                         />
                     </div>
                 </div>
-                <Show when={mobileMenuMounted()}>
-                    <Portal>
+                <Portal>
+                    <div
+                        class={styles.mobileMenuOverlay}
+                        classList={{ [styles.mobileMenuOverlayVisible]: mobileMenuVisible() }}
+                        onClick={closeMobileMenu}
+                    >
                         <div
-                            class={styles.mobileMenuOverlay}
-                            classList={{ [styles.mobileMenuOverlayVisible]: mobileMenuVisible() }}
-                            onClick={closeMobileMenu}
+                            class={styles.mobileMenu}
+                            onClick={event => event.stopPropagation()}
                         >
-                            <div
-                                class={styles.mobileMenu}
-                                onClick={event => event.stopPropagation()}
-                            >
-                                <div class={styles.mobileSection}>
-                                    <MobileLanguageSwitcher />
-                                </div>
-
-                                <A class={styles.mobileMenuItem} href="/" onClick={closeMobileMenu}>
-                                    {t("navbar.home")}
-                                </A>
-                                <A class={styles.mobileMenuItem} href="/adopt" onClick={closeMobileMenu}>
-                                    {t("navbar.adopt")}
-                                </A>
-                                <A class={styles.mobileMenuItem} href="/donate" onClick={closeMobileMenu}>
-                                    {t("navbar.donate")}
-                                </A>
-
-                                <Show when={currentUser() === null} fallback={<MobileAccount onNavigate={closeMobileMenu} />}>
-                                    <button
-                                        type="button"
-                                        class={styles.mobileLoginButton}
-                                        onClick={() => {
-                                            closeMobileMenu();
-                                            openForm();
-                                        }}
-                                    >
-                                        <RiUserFacesAccountCircleLine />
-                                        {t("login")}
-                                    </button>
-                                </Show>
+                            <div class={styles.mobileSection}>
+                                <MobileLanguageSwitcher />
                             </div>
+
+                            <A class={styles.mobileMenuItem} href="/" onClick={closeMobileMenu}>
+                                {t("navbar.home")}
+                            </A>
+                            <A class={styles.mobileMenuItem} href="/adopt" onClick={closeMobileMenu}>
+                                {t("navbar.adopt")}
+                            </A>
+                            <A class={styles.mobileMenuItem} href="/donate" onClick={closeMobileMenu}>
+                                {t("navbar.donate")}
+                            </A>
+
+                            <Show when={currentUser() === null} fallback={<MobileAccount onNavigate={closeMobileMenu} />}>
+                                <button
+                                    type="button"
+                                    class={styles.mobileLoginButton}
+                                    onClick={() => {
+                                        closeMobileMenu();
+                                        openForm();
+                                    }}
+                                >
+                                    <RiUserFacesAccountCircleLine />
+                                    {t("login")}
+                                </button>
+                            </Show>
                         </div>
-                    </Portal>
-                </Show>
+                    </div>
+                </Portal>
                 <div class={styles.content}>
                     {props.children}
                 </div>
             </div>
-            <Show when={formMounted()}>
-                <Portal>
-                    <div
-                        class={styles.formModalContainer}
-                        classList={{ [styles.formModalVisible]: formVisible() }}
-                        onClick={closeForm}
-                    >
-                        <LoginForm onClose={closeForm} />
-                    </div>
-                </Portal>
-            </Show>
+            <Portal>
+                <div
+                    class={styles.formModalContainer}
+                    classList={{ [styles.formModalVisible]: formVisible() }}
+                    onClick={closeForm}
+                >
+                    <LoginForm onClose={closeForm} />
+                </div>
+            </Portal>
         </>
     );
 }
@@ -212,32 +170,35 @@ function LanguageDropdown() {
                 <span class={styles.languageLabel}>{currentLabel()}</span>
                 <AiFillCaretDown class={`${styles.chevron} ${open() ? styles.chevronOpen : ""}`} />
             </button>
-            <Show when={open()}>
-                <div class={styles.languageMenu} role="listbox" aria-label="Select language">
-                    <button
-                        type="button"
-                        class={`${styles.languageOption} ${locale() === "en" ? styles.languageOptionActive : ""}`}
-                        onClick={() => {
-                            setLocale("en");
-                            setOpen(false);
-                        }}
-                    >
-                        <span class={`${styles.flag} fi fi-gb`} />
-                        English
-                    </button>
-                    <button
-                        type="button"
-                        class={`${styles.languageOption} ${locale() === "ua" ? styles.languageOptionActive : ""}`}
-                        onClick={() => {
-                            setLocale("ua");
-                            setOpen(false);
-                        }}
-                    >
-                        <span class={`${styles.flag} fi fi-ua`} />
-                        Українська
-                    </button>
-                </div>
-            </Show>
+            <div
+                class={styles.languageMenu}
+                classList={{ [styles.languageMenuVisible]: open() }}
+                role="listbox"
+                aria-label="Select language"
+            >
+                <button
+                    type="button"
+                    class={`${styles.languageOption} ${locale() === "en" ? styles.languageOptionActive : ""}`}
+                    onClick={() => {
+                        setLocale("en");
+                        setOpen(false);
+                    }}
+                >
+                    <span class={`${styles.flag} fi fi-gb`} />
+                    English
+                </button>
+                <button
+                    type="button"
+                    class={`${styles.languageOption} ${locale() === "ua" ? styles.languageOptionActive : ""}`}
+                    onClick={() => {
+                        setLocale("ua");
+                        setOpen(false);
+                    }}
+                >
+                    <span class={`${styles.flag} fi fi-ua`} />
+                    Українська
+                </button>
+            </div>
         </div>
     );
 }
@@ -268,7 +229,7 @@ function NavbarItem(props: NavbarItemProps) {
 }
 
 function Account() {
-    const { currentUser } = useAccountContext();
+    const { currentUser, logout } = useAccountContext();
     const [t] = useI18n();
 
     return (
@@ -281,7 +242,7 @@ function Account() {
                 <A href="/dashboard" class={styles.accountAction}>
                     {t("navbar.dashboard")}
                 </A>
-                <button class={styles.accountAction}>
+                <button class={styles.accountAction} onClick={logout}>
                     {t("logout")}
                 </button>
             </div>
@@ -295,13 +256,19 @@ interface MobileAccountProps {
 
 function MobileAccount(props: MobileAccountProps) {
     const [t] = useI18n();
+    const { logout } = useAccountContext();
+
+    const handleLogout = () => {
+        logout();
+        props.onNavigate();
+    };
 
     return (
         <div class={styles.mobileAccountBlock}>
             <A href="/dashboard" class={styles.mobileMenuItem} onClick={props.onNavigate}>
                 {t("navbar.dashboard")}
             </A>
-            <button type="button" class={styles.mobileMenuItem}>
+            <button type="button" class={styles.mobileMenuItem} onClick={handleLogout}>
                 {t("logout")}
             </button>
         </div>
@@ -316,11 +283,14 @@ interface LoginFormProps {
 
 function LoginForm(props: LoginFormProps) {
     const [t] = useI18n();
+    const { setCurrentUser, setToken, invalidateTokenIn } = useAccountContext();
     const [mode, setMode] = createSignal<AuthMode>("login");
     const [email, setEmail] = createSignal("");
     const [password, setPassword] = createSignal("");
     const [confirmPassword, setConfirmPassword] = createSignal("");
     const [submitMessage, setSubmitMessage] = createSignal("");
+    const [isDisabled, setIsDisabled] = createSignal(false);
+    const [error, setError] = createSignal<string | null>(null);
 
     const emailValidationMessage = (value: string) => {
         const normalized = value.trim();
@@ -363,6 +333,7 @@ function LoginForm(props: LoginFormProps) {
     const switchMode = (nextMode: AuthMode) => {
         setMode(nextMode);
         setSubmitMessage("");
+        setError(null);
     };
 
     const emailError = () => emailValidationMessage(email());
@@ -385,7 +356,7 @@ function LoginForm(props: LoginFormProps) {
         return "";
     };
 
-    const onSubmit: JSX.EventHandlerUnion<HTMLFormElement, SubmitEvent> = event => {
+    const onSubmit: JSX.EventHandlerUnion<HTMLFormElement, SubmitEvent> = async event => {
         event.preventDefault();
 
         const hasEmailError = emailValidationMessage(email()) !== "";
@@ -396,9 +367,159 @@ function LoginForm(props: LoginFormProps) {
             return;
         }
 
-        // Placeholder submit handler until API integration is added.
-        setSubmitMessage(t("auth.placeholder.submit"));
+        setIsDisabled(true);
+        if (mode() === "login") {
+            await handleLogin();
+        } else {
+            await handleRegister();
+        }
     };
+
+    async function handleLogin() {
+        const newToken = await grecaptcha.execute(
+            import.meta.env.VITE_RECAPTCHA_SITE_KEY,
+            { action: mode() }
+        );
+
+        const request = await req<Api.LoginResponse, Api.LoginError>(`${window.API_URL}/auth/login`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                email: email().trim(),
+                password: password().trim(),
+                recaptchaToken: newToken,
+            }),
+        });
+
+        if (request.error) {
+            batch(() => {
+                setIsDisabled(false);
+                const reqErr = request.error;
+                if (typeof reqErr === "string") {
+                    setError(reqErr);
+                } else {
+                    setError(t(reqErr.status));
+                }
+            });
+            return;
+        }
+
+        const response = request.data.split();
+        if (response.error) {
+            setIsDisabled(false);
+            const json = await response.error.json();
+
+            if (json.error) {
+                setError(t(json.error.status));
+            } else {
+                setError(t(json.data.status));
+            }
+
+            return;
+        }
+
+        const json = await response.data.json();
+        if (json.error) {
+            batch(() => {
+                setIsDisabled(false);
+                setError(t(json.error.status));
+            });
+
+            return;
+        }
+
+        localStorage.setItem("token", json.data.token);
+        batch(() => {
+            setCurrentUser(json.data.user);
+            setToken(json.data.token);
+        });
+
+        addNotification({
+            variant: "info",
+            message: t("auth.loginSuccess"),
+        });
+
+        props.onClose();
+        invalidateTokenIn(json.data.tokenExpiryAtMs - Date.now());
+    }
+
+    async function handleRegister() {
+        const newToken = await grecaptcha.execute(
+            import.meta.env.VITE_RECAPTCHA_SITE_KEY,
+            { action: mode() }
+        );
+
+        const request = await req<Api.RegisterResponse, Api.RegisterError>(`${window.API_URL}/auth/register`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                email: email().trim(),
+                password: password().trim(),
+                recaptchaToken: newToken,
+            }),
+        });
+
+        if (request.error) {
+            batch(() => {
+                setIsDisabled(false);
+                const reqErr = request.error;
+                if (typeof reqErr === "string") {
+                    setError(reqErr);
+                } else {
+                    setError(t(reqErr.status));
+                }
+            });
+            return;
+        }
+
+        const response = request.data.split();
+        if (response.error) {
+            setIsDisabled(false);
+            const json = await response.error.json();
+
+            if (json.error) {
+                setError(t(json.error.status));
+            } else {
+                setError(t(json.data.status));
+            }
+
+            return;
+        }
+
+        const json = await response.data.json();
+        if (json.error) {
+            batch(() => {
+                setIsDisabled(false);
+                setError(t(json.error.status));
+            });
+
+            return;
+        }
+
+        localStorage.setItem("token", json.data.token);
+        batch(() => {
+            setCurrentUser(json.data.user);
+            setToken(json.data.token);
+        });
+
+        addNotification({
+            variant: "info",
+            message: t("auth.registerSuccess"),
+        });
+
+        props.onClose();
+        invalidateTokenIn(json.data.tokenExpiryAtMs - Date.now());
+    }
+
+    onMount(() => {
+        grecaptcha.ready(() => {
+            console.log("[Login Form] reCaptcha v3 is ready!");
+        });
+    });
 
     return (
         <div class={styles.formModal} onClick={event => event.stopPropagation()}>
@@ -424,7 +545,7 @@ function LoginForm(props: LoginFormProps) {
                     </div>
                 </div>
                 <button type="button" class={styles.closeButton} onClick={props.onClose} aria-label={t("auth.close")}>
-                    ×
+                    <FaSolidClose />
                 </button>
             </div>
 
@@ -436,6 +557,7 @@ function LoginForm(props: LoginFormProps) {
                     onInput={event => {
                         setEmail(event.currentTarget.value);
                         setSubmitMessage("");
+                        setError(null);
                     }}
                     autocomplete="email"
                     error={emailError()}
@@ -447,6 +569,7 @@ function LoginForm(props: LoginFormProps) {
                     onInput={event => {
                         setPassword(event.currentTarget.value);
                         setSubmitMessage("");
+                        setError(null);
                     }}
                     autocomplete={mode() === "login" ? "current-password" : "new-password"}
                     error={passwordError()}
@@ -459,19 +582,36 @@ function LoginForm(props: LoginFormProps) {
                         onInput={event => {
                             setConfirmPassword(event.currentTarget.value);
                             setSubmitMessage("");
+                            setError(null);
                         }}
                         autocomplete="new-password"
                         error={confirmError()}
                     />
                 </Show>
 
-                <button type="submit" class={styles.submitButton}>
+                <Show when={error()}>
+                    <p class={styles.submitErrorText}>{error()}</p>
+                </Show>
+
+                <button type="submit" class={styles.submitButton} disabled={isDisabled()}>
                     {mode() === "login" ? t("auth.login") : t("auth.register")}
                 </button>
 
                 <Show when={submitMessage()}>
                     <p class={styles.placeholderText}>{submitMessage()}</p>
                 </Show>
+
+                <p class={styles.recaptchaText}>
+                    {t("auth.recaptcha.text1")}
+                    <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer" class={styles.recaptchaLink}>
+                        {t("auth.recaptcha.privacy")}
+                    </a>
+                    {t("auth.recaptcha.text2")}
+                    <a href="https://policies.google.com/terms" target="_blank" rel="noopener noreferrer" class={styles.recaptchaLink}>
+                        {t("auth.recaptcha.terms")}
+                    </a>
+                    {t("auth.recaptcha.text3")}
+                </p>
             </form>
         </div>
     );

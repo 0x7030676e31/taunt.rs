@@ -125,6 +125,25 @@
     background: color.scale($background0, $lightness: -18%);
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
     z-index: 10;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transform: translateY(-8px);
+    transition:
+        opacity 0.2s ease,
+        transform 0.2s ease,
+        visibility 0s linear 0.2s;
+}
+
+.languageMenuVisible {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: translateY(0);
+    transition:
+        opacity 0.2s ease,
+        transform 0.2s ease,
+        visibility 0s linear 0s;
 }
 
 .languageOption {
@@ -210,8 +229,8 @@
     display: flex;
     align-items: center;
     gap: 0.8rem;
-    padding: 0.3rem 0.35rem 0.3rem 0.7rem;
-    border-radius: 999px;
+    padding: 0.35rem 0.4rem 0.35rem 0.7rem;
+    border-radius: 0.55rem;
     background-color: color.scale($background0, $lightness: -14%);
     border: 1px solid color.scale($background1, $lightness: -35%);
 }
@@ -270,8 +289,11 @@
     padding: 1.25rem;
     z-index: 1000;
     opacity: 0;
+    visibility: hidden;
     pointer-events: none;
-    transition: opacity 0.22s ease;
+    transition:
+        opacity 0.22s ease,
+        visibility 0s linear 0.22s;
 }
 
 .formModal {
@@ -290,7 +312,11 @@
 
 .formModalVisible {
     opacity: 1;
+    visibility: visible;
     pointer-events: auto;
+    transition:
+        opacity 0.22s ease,
+        visibility 0s linear 0s;
 
     .formModal {
         opacity: 1;
@@ -360,8 +386,9 @@
     width: 2rem;
     height: 2rem;
     cursor: pointer;
-    font-size: 1.2rem;
-    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .authForm {
@@ -440,11 +467,44 @@
         background-color 0.2s ease,
         border-color 0.2s ease;
 
-    &:hover {
+    &:hover:not(:disabled) {
         transform: translateY(-1px);
         background: color.scale($primary, $lightness: -10%);
         border-color: color.scale($primary, $lightness: -20%);
         box-shadow: 0 12px 22px rgba(255, 186, 99, 0.34);
+    }
+
+    &:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+}
+
+.submitErrorText {
+    margin: 0 0 0.5rem 0;
+    color: #ff9ba6;
+    font-size: 0.88rem;
+    font-weight: 700;
+    text-align: center;
+}
+
+.recaptchaText {
+    margin-top: 0.15rem;
+    font-size: 0.72rem;
+    color: color.scale($background1, $lightness: -35%);
+    text-align: center;
+    line-height: 1.4;
+}
+
+.recaptchaLink {
+    color: color.scale($primary, $lightness: -5%);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s ease;
+
+    &:hover {
+        color: $primary;
+        text-decoration: underline;
     }
 }
 

@@ -27,6 +27,7 @@ struct AuthRequest {
 struct AuthResponse {
     token: String,
     user: User,
+    token_expiry_at_ms: u64,
 }
 
 #[actix_web::post("/login")]
@@ -87,6 +88,7 @@ async fn login(
         Ok(token) => HttpResponse::Ok().json(AuthResponse {
             token: token.value,
             user,
+            token_expiry_at_ms: token.expires_at.timestamp_millis() as u64,
         }),
         Err(e) => ErrorResponse::from(e).into(),
     }
@@ -180,11 +182,83 @@ async fn register(
         Ok(token) => HttpResponse::Ok().json(AuthResponse {
             token: token.value,
             user,
+            token_expiry_at_ms: token.expires_at.timestamp_millis() as u64,
         }),
         Err(e) => ErrorResponse::from(e).into(),
     }
 }
 
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
+struct MeResponse {
+    user: User,
+    token_expiry_at_ms: u64,
+}
+
+#[actix_web::get("/me")]
+async fn me(
+    req: HttpRequest,
+    users_table: web::Data<UsersTable>,
+    tokens_table: web::Data<TokensTable>,
+) -> HttpResponse {
+    let token = match req
+        .headers()
+        .get("Authorization")
+        .and_then(|h| h.to_str().ok())
+    {
+        Some(t) if !t.is_empty() => t,
+        _ => {
+            return ErrorResponseBuilder::bad_request()
+                .set_status("ME_MISSING_AUTHORIZATION")
+                .set_message("Missing or invalid Authorization header.")
+                .build()
+                .into();
+        }
+    };
+
+    let token = match tokens_table.get_token(token).await {
+        Ok(Some(token)) => token,
+        Ok(None) => {
+            return ErrorResponseBuilder::bad_request()
+                .set_status("ME_INVALID_TOKEN")
+                .set_message("Invalid authentication token.")
+                .build()
+                .into();
+        }
+        Err(e) => {
+            return ErrorResponseBuilder::database_error()
+                .set_message(format!("An error occurred while fetching token data: {e}"))
+                .build()
+                .into();
+        }
+    };
+
+    let user = match users_table.get_user_by_id(token.user_id).await {
+        Ok(Some(user)) => user,
+        Ok(None) => {
+            return ErrorResponseBuilder::bad_request()
+                .set_status("ME_USER_NOT_FOUND")
+                .set_message("The user associated with the provided token was not found.")
+                .build()
+                .into();
+        }
+        Err(e) => {
+            return ErrorResponseBuilder::database_error()
+                .set_message(format!("An error occurred while fetching user data: {e}"))
+                .build()
+                .into();
+        }
+    };
+
+    HttpResponse::Ok().json(MeResponse {
+        user,
+        token_expiry_at_ms: token.expires_at.timestamp_millis() as u64,
+    })
+}
+
 pub fn routes() -> Scope {
-    Scope::new("/auth").service(login).service(register)
+    Scope::new("/auth")
+        .service(login)
+        .service(register)
+        .service(me)
 }
