@@ -14,22 +14,41 @@ import Applications from "./pages/applications";
 import Volunteer from "./pages/volunteer";
 import Volunteers from "./pages/volunteers";
 
-const Layout = (props: { children?: JSX.Element }) => {
+import Navbar from "./common/navbar";
+import Layout from "./common/layout";
+
+import { AccountContextProvider } from "./providers/account";
+import { SocketProviderContext } from "./providers/socket";
+
+const AppLayout = (props: { children?: JSX.Element }) => {
     return (
-        <>
+        <AccountContextProvider>
+            <Navbar />
             {props.children}
-        </>
+        </AccountContextProvider>
+    )
+}
+
+const DashboardLayout = (props: { children?: JSX.Element }) => {
+    return (
+        <SocketProviderContext>
+            <Layout>
+                {props.children}
+            </Layout>
+        </SocketProviderContext>
     )
 }
 
 export default function App() {
     return (
         <Router>
-            <Route path="/" component={Home} />
-            <Route path="/donate" component={Donate} />
-            <Route path="/adopt" component={Adopt} />
-            <Route path="/login" component={Login} />
-            <Route path="/dashboard" component={Layout}>
+            <Route component={AppLayout}>
+                <Route path="/" component={Home} />
+                <Route path="/donate" component={Donate} />
+                <Route path="/adopt" component={Adopt} />
+                <Route path="/login" component={Login} />
+            </Route>
+            <Route path="/dashboard" component={DashboardLayout}>
                 <Route path="/" component={Dashboard} />
                 <Route path="/donations" component={Donations} />
                 <Route path="/pets" component={Pets} />
