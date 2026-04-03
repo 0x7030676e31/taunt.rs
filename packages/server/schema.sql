@@ -39,6 +39,14 @@ CREATE TABLE IF NOT EXISTS tokens (
   FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
 );
 
+CREATE TABLE IF NOT EXISTS donations (
+  donation_id INTEGER PRIMARY KEY AUTOINCREMENT,
+  donor_name TEXT NOT NULL,
+  amount REAL NOT NULL,
+  message TEXT,
+  created_at_ms INTEGER NOT NULL
+);
+
 CREATE INDEX IF NOT EXISTS idx_applications_animal_id ON applications(animal_id);
 CREATE INDEX IF NOT EXISTS idx_tokens_user_id ON tokens(user_id);
 CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
