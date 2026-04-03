@@ -13,11 +13,6 @@ mod app;
 mod configuration;
 mod database;
 
-#[get("/")]
-async fn index_page(config: web::Data<AppConfiguration>) -> HttpResponse {
-    HttpResponse::Ok().body(fs::read(&config.static_asset_paths.index).unwrap_or("oopsie".into()))
-}
-
 #[actix_web::main]
 async fn main() -> io::Result<()> {
     let config = web::Data::new(configuration::build_or_exit_with_error());
@@ -35,16 +30,15 @@ async fn main() -> io::Result<()> {
         .await
         .expect("Failed to connect to the database");
 
-    let users_table = UsersTable::new(pool.clone());
-    let users_table = web::Data::new(users_table);
+    let users_table = web::Data::new(UsersTable::new(pool.clone()));
 
     let host_and_port = (config.host.value.clone(), config.port.value);
 
     HttpServer::new(move || {
         App::new()
-            .service(index_page)
             .app_data(config.clone())
             .app_data(users_table.clone())
+            .service(api::routes())
     })
     .bind(host_and_port)?
     .run()

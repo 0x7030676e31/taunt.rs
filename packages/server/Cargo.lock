@@ -2545,6 +2545,7 @@ dependencies = [
  "const_format",
  "env_logger",
  "envy",
+ "futures-util",
  "itertools",
  "literator",
  "log",

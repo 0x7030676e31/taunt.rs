@@ -26,3 +26,4 @@ sqlx = { version = "0.8.6", features = ["tls-native-tls", "sqlite"] }
 reqwest = "0.13.2"
 actix-ws = "0.4.0"
 chrono = "0.4.44"
+futures-util = "0.3.32"

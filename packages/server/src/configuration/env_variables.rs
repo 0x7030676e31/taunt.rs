@@ -1,8 +1,7 @@
 use std::path::PathBuf;
 
-use crate::configuration::ConfigurationError;
-
 use super::ConfigurationOptions;
+use crate::configuration::ConfigurationError;
 
 #[derive(serde::Deserialize, Debug)]
 pub struct EnvVars {

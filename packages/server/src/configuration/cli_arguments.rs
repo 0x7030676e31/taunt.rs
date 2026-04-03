@@ -1,6 +1,8 @@
-use super::ConfigurationOptions;
-use clap::{builder::OsStr, parser::ValueSource, ArgMatches, CommandFactory, Parser};
 use std::path::PathBuf;
+
+use clap::{ArgMatches, CommandFactory, Parser, builder::OsStr, parser::ValueSource};
+
+use super::ConfigurationOptions;
 
 /// Something to implement traits for
 #[derive(Clone, Debug)]
@@ -84,16 +86,8 @@ impl Into<ConfigurationOptions> for (ArgMatches, CLIArgs) {
                 "--database-url",
                 self.1.database_url,
             ),
-            port: via_cli(
-                source("port"),
-                "--port",
-                self.1.port,
-            ),
-            host: via_cli(
-                source("host"),
-                "--host",
-                self.1.host,
-            ),
+            port: via_cli(source("port"), "--port", self.1.port),
+            host: via_cli(source("host"), "--host", self.1.host),
             database_key: ConfigurationOption::missing(),
             captcha_private_key: ConfigurationOption::missing(),
             log_level: via_cli(
