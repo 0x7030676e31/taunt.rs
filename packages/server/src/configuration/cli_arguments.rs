@@ -74,6 +74,7 @@ impl Into<ConfigurationOptions> for (ArgMatches, CLIArgs) {
             configuration_file_path: ConfigurationOption::missing(),
             stripe_api_key: ConfigurationOption::missing(),
             database_key: ConfigurationOption::missing(),
+            captcha_private_key: ConfigurationOption::missing(),
             log_level: via_cli(
                 source("log_level"),
                 "--log-level",

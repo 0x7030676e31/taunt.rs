@@ -9,6 +9,7 @@ pub struct EnvVars {
     pub config: Option<PathBuf>,
     stripe_api_key: Option<String>,
     database_key: Option<String>,
+    captcha_private_key: Option<String>,
     static_assets: Option<PathBuf>,
 }
 
@@ -22,6 +23,7 @@ impl Into<ConfigurationOptions> for EnvVars {
             configuration_file_path: ConfigurationOption::missing(),
             log_level: ConfigurationOption::missing(),
             database_key: via_env("DATABASE_KEY", self.database_key),
+            captcha_private_key: via_env("CAPTCHA_PRIVATE_KEY", self.captcha_private_key),
             stripe_api_key: via_env("STRIPE_API_KEY", self.stripe_api_key),
             path_to_static_assets: via_env("STATIC_ASSETS", self.static_assets),
         }

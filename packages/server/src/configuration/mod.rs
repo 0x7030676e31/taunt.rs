@@ -295,6 +295,7 @@ pub struct ConfigurationOptions {
     log_level: ConfigurationOption<log::Level>,
     database_key: ConfigurationOption<String>,
     stripe_api_key: ConfigurationOption<String>,
+    captcha_private_key: ConfigurationOption<String>,
     path_to_static_assets: ConfigurationOption<PathBuf>,
 }
 
@@ -308,6 +309,8 @@ pub struct AppConfiguration {
     pub database_key: ProvidedOption<String>,
     /// The Stripe API key
     pub stripe_api_key: ProvidedOption<String>,
+    /// The CAPTCHA private key
+    pub captcha_private_key: ProvidedOption<String>,
     /// The path to the static assets directory
     pub path_to_static_assets: ProvidedOption<PathBuf>,
 }
@@ -344,7 +347,7 @@ impl Display for AppConfiguration {
                     .collect::<String>()
             )
         }
-        // Only the first 16 digits of the Sha256 prefix of the API keys is shown
+        // Only the first 16 digits of the Sha256 prefix of the sensitive keys is shown
         writeln!(
             f,
             "database_key (sha256 hash prefix): {}",
@@ -354,6 +357,11 @@ impl Display for AppConfiguration {
             f,
             "stripe_api_key (sha256 hash prefix): {}",
             self.stripe_api_key.show_through(hash_prefix),
+        )?;
+        write!(
+            f,
+            "captcha_private_key (sha256 hash prefix): {}",
+            self.captcha_private_key.show_through(hash_prefix),
         )?;
         Ok(())
     }
@@ -455,6 +463,7 @@ impl ConfigurationOptions {
             log_level: ConfigurationOption::default(log::Level::Info),
             database_key: ConfigurationOption::missing(),
             stripe_api_key: ConfigurationOption::missing(),
+            captcha_private_key: ConfigurationOption::missing(),
             path_to_static_assets: ConfigurationOption::missing(),
         }
     }
@@ -468,6 +477,7 @@ impl ConfigurationOptions {
             log_level: self.log_level.override_with(other.log_level),
             database_key: self.database_key.override_with(other.database_key),
             stripe_api_key: self.stripe_api_key.override_with(other.stripe_api_key),
+            captcha_private_key: self.captcha_private_key.override_with(other.captcha_private_key),
             path_to_static_assets: self
                 .path_to_static_assets
                 .override_with(other.path_to_static_assets),
@@ -487,6 +497,7 @@ impl ConfigurationOptions {
             // TODO: validate these against some kind of schema maybe?
             database_key: self.database_key.required_as("database_key")?,
             stripe_api_key: self.stripe_api_key.required_as("stripe_api_key")?,
+            captcha_private_key: self.captcha_private_key.required_as("captcha_private_key")?,
             // the assets should live in an immutable nix store path
             path_to_static_assets: self
                 .path_to_static_assets

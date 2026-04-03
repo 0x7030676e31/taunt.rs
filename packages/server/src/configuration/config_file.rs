@@ -22,6 +22,7 @@ impl Into<ConfigurationOptions> for (ProvidedOption<Rc<PathBuf>>, ConfigFileOpti
             log_level: ConfigurationOption::via(opt("log_level"), self.1.log_level),
             database_key: ConfigurationOption::missing(),
             stripe_api_key: ConfigurationOption::missing(),
+            captcha_private_key: ConfigurationOption::missing(),
             path_to_static_assets: ConfigurationOption::via(
                 opt("static_assets"),
                 self.1.static_assets,
