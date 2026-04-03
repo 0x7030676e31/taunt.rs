@@ -1,5 +1,6 @@
 {
   pkg-config, openssl,
+  sqlite, sqlx-cli,
   pkgs, inputs,
   ...
 }:
@@ -21,8 +22,14 @@ let
   };
 
   artifacts = crane.buildDepsOnly commonArgs;
-
 in
   crane.buildPackage (commonArgs // {
     cargoArtifacts = artifacts;
+    nativeBuildInputs = [ sqlite sqlx-cli ];
+    preBuild = ''
+      mkdir $out
+      export DATABASE_URL=sqlite:$out/db.sqlite3
+      sqlx database create
+      sqlite3 $out/db.sqlite3 < ${./schema.sql}
+    '';
   })
