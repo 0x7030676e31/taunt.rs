@@ -1,4 +1,4 @@
-import { useAccountContext } from "@/providers/account";
+import { useAccountContext } from "@/account";
 import { A } from "@solidjs/router"
 import { useI18n } from "@/locales/i18n";
 import { Show, batch, createSignal, onMount } from "solid-js";

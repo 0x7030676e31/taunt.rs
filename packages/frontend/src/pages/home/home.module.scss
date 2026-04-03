@@ -1,3 +1,4 @@
+@use "sass:color";
 @use "palette" as *;
 @import url("https://fonts.googleapis.com/css2?family=Climate+Crisis:YEAR@1979&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Roboto+Mono:ital,wght@0,100..700;1,100..700&display=swap");
 
@@ -165,9 +166,9 @@
     flex: 0 1 calc(50% - 1rem);
     max-width: 250px;
     aspect-ratio: 3 / 4;
-    border-radius: 12px;
+    border-radius: 20px;
     overflow: hidden;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 15px 45px 5px rgba(0, 0, 0, 0.3);
     transition:
         transform 0.3s ease,
         box-shadow 0.3s ease;
@@ -182,7 +183,7 @@
 
     &:hover {
         transform: translateY(-5px);
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        box-shadow: 0 20px 55px 8px rgba(0, 0, 0, 0.4);
     }
 }
 
@@ -388,7 +389,7 @@
         margin-top: 1rem;
 
         &:hover {
-            background-color: darken($accent, 10%);
+            background-color: color.adjust($accent, $lightness: -10%);
         }
 
         &:active {
