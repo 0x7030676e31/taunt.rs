@@ -1,4 +1,4 @@
-use std::{error::Error, fmt::Display, fs, path::PathBuf, rc::Rc, sync::Arc};
+use std::{error::Error, fmt::Display, fs, path::PathBuf, sync::Arc};
 
 use itertools::Itertools;
 use literator::Literator;
@@ -120,13 +120,6 @@ impl<T> ProvidedOption<T> {
             )
             .as_str())
         )
-    }
-
-    fn map<U>(self, f: impl FnOnce(T) -> U) -> ProvidedOption<U> {
-        ProvidedOption {
-            value: f(self.value),
-            overriding_history: self.overriding_history,
-        }
     }
 
     fn ensure(
@@ -591,16 +584,25 @@ impl ConfigurationOptions {
 }
 
 fn is_a_nix_derivation(path: &PathBuf) -> Result<(), ConfigurationError> {
+    /// This structure is only used to verify the output of `nix path-info`
     #[derive(serde::Deserialize)]
     #[serde(rename_all = "camelCase")]
     struct NixPathInfoOutput {
+        #[allow(dead_code)]
         ca: Option<String>,
+        #[allow(dead_code)]
         deriver: PathBuf,
+        #[allow(dead_code)]
         nar_hash: String,
+        #[allow(dead_code)]
         nar_size: usize,
+        #[allow(dead_code)]
         references: Vec<PathBuf>,
+        #[allow(dead_code)]
         registration_time: u64,
+        #[allow(dead_code)]
         signatures: Vec<String>,
+        #[allow(dead_code)]
         ultimate: bool,
     }
     macro_rules! expected_version {
