@@ -1,14 +1,12 @@
 use std::{
-    error::Error,
-    fmt,
     future::{Future, ready},
     pin::Pin,
-    str::FromStr,
 };
 
 use actix_web::{FromRequest, web};
 use chrono::{DateTime, TimeZone, Utc};
 use serde::Serialize;
+use sha2::{Digest, Sha256};
 use sqlx::{ColumnIndex, FromRow, Row, SqlitePool, decode, types};
 
 use crate::{
@@ -19,19 +17,13 @@ use crate::{
 #[derive(Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct User {
-    user_id: u32,
-    email: String,
-    password_hash: String,
-    #[serde(
-        serialize_with = "serialize_datetime_as_millis",
-        rename = "createdAtMs"
-    )]
-    created_at: DateTime<Utc>,
-    #[serde(
-        serialize_with = "serialize_datetime_as_millis",
-        rename = "updatedAtMs"
-    )]
-    updated_at: DateTime<Utc>,
+    pub user_id: u32,
+    pub email: String,
+    pub password_hash: String,
+    #[serde(serialize_with = "serialize_datetime_as_millis")]
+    pub created_at: DateTime<Utc>,
+    #[serde(serialize_with = "serialize_datetime_as_millis")]
+    pub updated_at: DateTime<Utc>,
 }
 
 fn serialize_datetime_as_millis<S>(date: &DateTime<Utc>, serializer: S) -> Result<S::Ok, S::Error>
@@ -225,6 +217,24 @@ impl UsersTable {
     pub async fn get_user(&self, user_id: u32) -> sqlx::Result<Option<User>> {
         sqlx::query_as::<_, User>("SELECT * FROM users WHERE user_id = ?")
             .bind(user_id as i64)
+            .fetch_optional(&self.pool)
+            .await
+    }
+
+    pub async fn get_user_by_creds(
+        &self,
+        email: &str,
+        password: &str,
+    ) -> sqlx::Result<Option<User>> {
+        let password_hash = Sha256::digest(password.as_bytes());
+        let password_hash_hex = password_hash
+            .iter()
+            .map(|byte| format!("{:02x}", byte))
+            .collect::<String>();
+
+        sqlx::query_as::<_, User>("SELECT * FROM users WHERE email = ? AND password_hash = ?")
+            .bind(email)
+            .bind(password_hash_hex)
             .fetch_optional(&self.pool)
             .await
     }

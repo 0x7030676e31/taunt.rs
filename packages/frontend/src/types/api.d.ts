@@ -3,8 +3,8 @@ declare global {
         interface User {
             userId: number;
             email: string;
-            createdAtMs: number;
-            updatedAtMs: number;
+            createdAt: number;
+            updatedAt: number;
         }
     }
 }

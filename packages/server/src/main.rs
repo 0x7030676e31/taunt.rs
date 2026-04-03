@@ -1,18 +1,16 @@
 #![feature(unwrap_infallible)]
 
-use std::{fs, io};
+use std::io;
 
-use actix_web::{App, HttpResponse, HttpServer, Responder, get, post, web};
-use log::{error, info, warn};
+use actix_web::{App, HttpServer, web};
+use log::info;
 use sqlx::{SqlitePool, sqlite::SqliteConnectOptions};
 
-use crate::{
-    configuration::AppConfiguration,
-    database::{token::TokensTable, users::UsersTable},
-};
+use crate::database::{token::TokensTable, users::UsersTable};
 
 mod api;
 mod configuration;
+mod core;
 mod database;
 
 #[actix_web::main]
