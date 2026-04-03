@@ -18,7 +18,7 @@ async fn index_page(config: web::Data<AppConfiguration>) -> HttpResponse {
     HttpResponse::Ok().body(fs::read(&config.static_asset_paths.index).unwrap_or("oopsie".into()))
 }
 
-#[actix_web::main]
+#[actix_web::main()]
 async fn main() -> Result<(), std::io::Error> {
     let config = web::Data::new(configuration::build_or_exit_with_error());
     let logger = colog::default_builder()
