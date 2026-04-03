@@ -49,6 +49,8 @@ pub struct CLIArgs {
     log_level: Option<LogLevelParser>,
     #[arg(short, long)]
     pub config: Option<PathBuf>,
+    #[arg(short, long)]
+    pub static_assets: Option<PathBuf>,
 }
 
 impl Into<ConfigurationOptions> for (ArgMatches, CLIArgs) {
@@ -76,6 +78,11 @@ impl Into<ConfigurationOptions> for (ArgMatches, CLIArgs) {
                 source("log_level"),
                 "--log-level",
                 self.1.log_level.map(|v| v.0),
+            ),
+            path_to_static_assets: via_cli(
+                source("static_assets"),
+                "--static-assets",
+                self.1.static_assets,
             ),
         }
     }

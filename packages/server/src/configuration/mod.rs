@@ -1,7 +1,10 @@
-use std::{fmt::Display, path::PathBuf, rc::Rc};
+use std::{error::Error, fmt::Display, fs, path::PathBuf, rc::Rc};
 
+use itertools::Itertools;
 use literator::Literator;
+use serde::de::IntoDeserializer;
 use sha2::{Digest, Sha256};
+use xshell::cmd;
 
 mod cli_arguments;
 mod config_file;
@@ -47,7 +50,11 @@ impl Source {
         match self {
             CLIArgument(name, default) => format!(
                 "the {}{name} command line argument",
-                if *default { "default value of the " } else { "" }
+                if *default {
+                    "default value of the "
+                } else {
+                    ""
+                }
             ),
             EnvVariable(name) => format!("the {name} environment variable"),
             TomlFileOption(file_path, name) => format!(
@@ -115,6 +122,30 @@ impl<T> ProvidedOption<T> {
             .as_str())
         )
     }
+
+    fn map<U>(self, f: impl FnOnce(T) -> U) -> ProvidedOption<U> {
+        ProvidedOption {
+            value: f(self.value),
+            overriding_history: self.overriding_history,
+        }
+    }
+
+    fn ensure(
+        self,
+        f: impl FnOnce(&T) -> Result<(), ConfigurationError>,
+    ) -> Result<Self, ConfigurationError> {
+        f(&self.value).map(|()| self)
+    }
+
+    fn validate<U>(
+        self,
+        f: impl FnOnce(&T, &OverridingHistory) -> Result<U, ConfigurationError>,
+    ) -> Result<ProvidedOption<U>, ConfigurationError> {
+        Ok(ProvidedOption {
+            value: f(&self.value, &self.overriding_history)?,
+            overriding_history: self.overriding_history,
+        })
+    }
 }
 
 /// Uses `ProvidedOption::show_through` under the hood, supplying it with a trivial `format!`
@@ -146,7 +177,10 @@ impl<T> ConfigurationOption<T> {
 
     /// An option the value of which came from the `Default` source.
     fn default(value: T) -> Self {
-        ConfigurationOption::Provided(ProvidedOption { value, overriding_history: OverridingHistory::with_just(Source::Default) })
+        ConfigurationOption::Provided(ProvidedOption {
+            value,
+            overriding_history: OverridingHistory::with_just(Source::Default),
+        })
     }
 
     /// Uses the optional `value` argument as the initial source of the option.
@@ -175,12 +209,11 @@ impl<T> ConfigurationOption<T> {
         use ConfigurationOption::*;
         match self {
             Provided(opt) => Ok(opt),
-            Missing {
-                queried_sources: sources,
-            } => Err(ConfigurationError::MissingRequiredOption(
-                option_name,
-                sources,
-            )),
+            Missing { queried_sources } => Err(if queried_sources.is_empty() {
+                ConfigurationError::CantBeProvided(option_name)
+            } else {
+                ConfigurationError::MissingRequiredOption(option_name, queried_sources)
+            }),
         }
     }
 
@@ -253,15 +286,16 @@ impl<T> ConfigurationOption<T> {
 /// configuration yet. Can be merged with each other using `.override_with`
 /// and converted to a configuration via `.finalize`.
 ///
-/// Individual options should preserve their own invariants but the entire
-/// structure may not necessarily be conherent. The invariants are checked
-/// by the option sources whereas the agreement between them is validated
-/// by the `ConfigurationOptions::build` function.
+/// The purpose of this structure is strictly to store half baked configuration data. The fields
+/// provide no guarantees in regards to the actual configuration options' invariants. Those will be
+/// checked when the configuration is assembled since it's easier to do it all in one place than
+/// per provider.
 pub struct ConfigurationOptions {
     configuration_file_path: ConfigurationOption<Rc<PathBuf>>,
     log_level: ConfigurationOption<log::Level>,
     database_key: ConfigurationOption<String>,
     stripe_api_key: ConfigurationOption<String>,
+    path_to_static_assets: ConfigurationOption<PathBuf>,
 }
 
 /// The configuration of the app
@@ -274,6 +308,8 @@ pub struct AppConfiguration {
     pub database_key: ProvidedOption<String>,
     /// The Stripe API key
     pub stripe_api_key: ProvidedOption<String>,
+    /// The path to the static assets directory
+    pub path_to_static_assets: ProvidedOption<PathBuf>,
 }
 
 /// A representation of the configuration that should be safe to share in the logs.
@@ -291,6 +327,12 @@ impl Display for AppConfiguration {
                 )
             })
             .transpose()?;
+        writeln!(
+            f,
+            "path_to_static_assets: {}",
+            self.path_to_static_assets
+                .show_through(|v| v.to_string_lossy().to_string())
+        )?;
         writeln!(f, "log_level: {}", self.log_level)?;
         fn hash_prefix(string: &String) -> String {
             format!(
@@ -320,6 +362,8 @@ impl Display for AppConfiguration {
 /// An error in the process of building the app configuration
 #[derive(Debug, thiserror::Error)]
 pub enum ConfigurationError {
+    #[error("the option {} is required but none of the available configuration methods can supply it. This is a software bug.", .0)]
+    CantBeProvided(&'static str),
     /// None of the providers that can handle a required option were used to provide it
     #[error(
         "the required configuration option {} is missing. Use {} to provide it.",
@@ -358,9 +402,41 @@ pub enum ConfigurationError {
     /// An error in configuration file's deserialization process.
     #[error("ran into issues while parsing {}:\n{}", .0.to_string_lossy(), .1)]
     ErrorWhileParsingConfig(PathBuf, toml::de::Error),
+    #[error(transparent)]
+    XShellError(xshell::Error),
+    #[error(
+        "{}, an attempt to execute the command below has been made:\n\n{}\n\n...which went in an unexpected way: {}{}",
+        .context,
+        textwrap::indent(command_in_question, "  "),
+        .explanation,
+        .raw_error
+            .as_ref()
+            .map(|e| format!(". Below is the original error:\n\n{}", e))
+            .unwrap_or(String::new())
+    )]
+    UnexpectedOutputFromExternalCommand {
+        context: &'static str,
+        command_in_question: String,
+        explanation: &'static str,
+        raw_error: Option<Box<dyn Error>>,
+    },
 }
 
 impl ConfigurationError {
+    fn for_command<'a>(
+        cmd: &xshell::Cmd<'a>,
+        context: &'static str,
+        explanation: &'static str,
+        raw_error: Option<Box<dyn Error>>,
+    ) -> Self {
+        ConfigurationError::UnexpectedOutputFromExternalCommand {
+            context,
+            command_in_question: cmd.to_string(),
+            explanation,
+            raw_error,
+        }
+    }
+
     /// Prints the error to the standard output and exists
     fn report_and_exit(self) -> ! {
         println!(
@@ -379,6 +455,7 @@ impl ConfigurationOptions {
             log_level: ConfigurationOption::default(log::Level::Info),
             database_key: ConfigurationOption::missing(),
             stripe_api_key: ConfigurationOption::missing(),
+            path_to_static_assets: ConfigurationOption::missing(),
         }
     }
 
@@ -391,19 +468,109 @@ impl ConfigurationOptions {
             log_level: self.log_level.override_with(other.log_level),
             database_key: self.database_key.override_with(other.database_key),
             stripe_api_key: self.stripe_api_key.override_with(other.stripe_api_key),
+            path_to_static_assets: self
+                .path_to_static_assets
+                .override_with(other.path_to_static_assets),
         }
     }
 
     /// Builds an `AppConfiguration` out of this set of options, ensuring that
     /// all required options are present and conform to the requirements.
+    ///
+    /// May do some I/O do validate the configuration.
     pub fn build(self) -> Result<AppConfiguration, ConfigurationError> {
         Ok(AppConfiguration {
+            // the invariant can't be checked since it comes from within the system itself
             configuration_file_path: self.configuration_file_path.optional(),
+            // nothing here, any log level is valid
             log_level: self.log_level.required_as("log_level")?,
+            // TODO: validate these against some kind of schema maybe?
             database_key: self.database_key.required_as("database_key")?,
             stripe_api_key: self.stripe_api_key.required_as("stripe_api_key")?,
+            // the assets should live in an immutable nix store path
+            path_to_static_assets: self
+                .path_to_static_assets
+                .required_as("path_to_resources")?
+                .ensure(is_a_nix_derivation)?
+                .validate(|path, overriding_history| {
+                    fs::canonicalize(path)
+                        .map_err(|_| ConfigurationError::ProvidedInvalidValue {
+                            option_name: "path_to_static_assets",
+                            provided_value_representation: path.to_string_lossy().to_string(),
+                            reason: "it's not a path with a canonical representation",
+                            overriding_history: overriding_history.clone(),
+                        })
+                })?,
         })
     }
+}
+
+fn is_a_nix_derivation(path: &PathBuf) -> Result<(), ConfigurationError> {
+    #[derive(serde::Deserialize)]
+    #[serde(rename_all = "camelCase")]
+    struct NixPathInfoOutput {
+        ca: Option<String>,
+        deriver: PathBuf,
+        nar_hash: String,
+        nar_size: usize,
+        references: Vec<PathBuf>,
+        registration_time: u64,
+        signatures: Vec<String>,
+        ultimate: bool,
+    }
+    macro_rules! expected_version {
+        () => {
+            "2.31.3"
+        };
+    }
+    static CONTEXT: &'static str =
+        "in order to ensure that the provided static asset path belongs to the Nix store";
+    let sh = xshell::Shell::new().map_err(ConfigurationError::XShellError)?;
+    let command = cmd!(sh, "nix path-info --json {path}");
+    let output = command.read().map_err(|err| {
+        ConfigurationError::for_command(
+            &command,
+            CONTEXT,
+            "the command didn't produce any useful output",
+            Some(Box::new(err)),
+        )
+    })?;
+    let parsed_output = serde_json::from_str::<serde_json::Value>(&output).map_err(|err| {
+        ConfigurationError::for_command(
+            &command,
+            CONTEXT,
+            "the output couldn't be parsed as JSON text",
+            Some(Box::new(err)),
+        )
+    })?;
+    let output_json_object_1st_field = parsed_output
+        .as_object()
+        .ok_or(ConfigurationError::for_command(
+        &command,
+        CONTEXT,
+        "the output was expected to be a single JSON object but something else is there instead",
+        None,
+    ))?.clone().into_values().exactly_one().map_err(|_| ConfigurationError::for_command(
+            &command,
+            CONTEXT,
+            "the output is a JSON object that doesn't have only 1 expected field",
+            None,
+        )
+    )?;
+    let _: NixPathInfoOutput =
+        serde_json::from_value(output_json_object_1st_field).map_err(|err| {
+            ConfigurationError::for_command(
+                &command,
+                CONTEXT,
+                concat!(
+                    "the output of the command does not match the expected schema (as of Nix",
+                    expected_version!(),
+                    ")"
+                ),
+                Some(Box::new(err)),
+            )
+        })?;
+    Ok(())
 }
 
 /// Queries the configuration providers and tries to build the configuration.

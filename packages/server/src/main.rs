@@ -1,7 +1,13 @@
 #![feature(unwrap_infallible)]
 
+use actix_web::{get, post, web, App, HttpResponse, HttpServer, Responder};
 use log::{error, info, warn};
 mod configuration;
+
+//#[post("/")]
+//async fn index_page() -> HttpResponse {
+//    HttpResponse::Ok().
+//}
 
 fn main() {
     let config = configuration::build_or_exit_with_error();
