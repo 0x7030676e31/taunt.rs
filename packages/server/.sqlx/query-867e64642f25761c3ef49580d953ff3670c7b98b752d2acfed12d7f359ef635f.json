@@ -1,0 +1,32 @@
+{
+  "db_name": "SQLite",
+  "query": "SELECT value, user_id, expires_at_ms FROM tokens WHERE value = ?",
+  "describe": {
+    "columns": [
+      {
+        "name": "value",
+        "ordinal": 0,
+        "type_info": "Text"
+      },
+      {
+        "name": "user_id",
+        "ordinal": 1,
+        "type_info": "Integer"
+      },
+      {
+        "name": "expires_at_ms",
+        "ordinal": 2,
+        "type_info": "Integer"
+      }
+    ],
+    "parameters": {
+      "Right": 1
+    },
+    "nullable": [
+      false,
+      false,
+      false
+    ]
+  },
+  "hash": "867e64642f25761c3ef49580d953ff3670c7b98b752d2acfed12d7f359ef635f"
+}

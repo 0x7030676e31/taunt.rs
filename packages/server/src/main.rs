@@ -6,7 +6,10 @@ use actix_web::{App, HttpResponse, HttpServer, Responder, get, post, web};
 use log::{error, info, warn};
 use sqlx::{SqlitePool, sqlite::SqliteConnectOptions};
 
-use crate::{configuration::AppConfiguration, database::users::UsersTable};
+use crate::{
+    configuration::AppConfiguration,
+    database::{token::TokensTable, users::UsersTable},
+};
 
 mod api;
 mod configuration;
@@ -30,6 +33,7 @@ async fn main() -> io::Result<()> {
         .expect("Failed to connect to the database");
 
     let users_table = web::Data::new(UsersTable::new(pool.clone()));
+    let tokens_table = web::Data::new(TokensTable::new(pool.clone()));
 
     let host_and_port = (config.host.value.clone(), config.port.value);
 
@@ -37,6 +41,7 @@ async fn main() -> io::Result<()> {
         App::new()
             .app_data(config.clone())
             .app_data(users_table.clone())
+            .app_data(tokens_table.clone())
             .service(api::routes())
     })
     .bind(host_and_port)?

@@ -7,7 +7,7 @@ edition = "2024"
 literator = "0.2.0"
 thiserror = "2.0.18"
 const_format = "0.2.35"
-log = { version = "0.4.29", features = [ "serde" ] }
+log = { version = "0.4.29", features = ["serde"] }
 sha2 = "0.11.0"
 textwrap = "0.16.2"
 ouroboros = "0.18.5"
@@ -16,17 +16,18 @@ colog = "1.4.0"
 serde = { version = "1.0.228", features = ["derive"] }
 serde_json = "1.0.149"
 itertools = "0.14.0"
-clap = { version = "4.6.0", features = [ "derive" ] }
+clap = { version = "4.6.0", features = ["derive"] }
 envy = "0.4"
 toml = "1.1.0+spec-1.1.0"
 actix-web = "4"
 xshell = "0.2.7"
 tokio = { version = "1.51.0", features = ["macros", "sync"] }
-sqlx = { version = "0.8.6", features = ["tls-native-tls", "sqlite", "runtime-tokio"] }
+sqlx = { version = "0.8.6", features = ["runtime-tokio-rustls", "sqlite"] }
 reqwest = "0.13.2"
 actix-ws = "0.4.0"
 chrono = "0.4.44"
 futures-util = "0.3.32"
+rand = "0.10.0"
 
 [features]
 dev = []

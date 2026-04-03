@@ -33,13 +33,13 @@ CREATE TABLE IF NOT EXISTS users (
   updated_at_ms INTEGER NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS sessions (
-  session_id TEXT PRIMARY KEY,
+CREATE TABLE IF NOT EXISTS tokens (
+  value TEXT NOT NULL,
   user_id INTEGER NOT NULL,
   expires_at_ms INTEGER NOT NULL,
   FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
 );
 
 CREATE INDEX IF NOT EXISTS idx_applications_animal_id ON applications(animal_id);
-CREATE INDEX IF NOT EXISTS idx_sessions_user_id ON sessions(user_id);
+CREATE INDEX IF NOT EXISTS idx_tokens_user_id ON tokens(user_id);
 CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);

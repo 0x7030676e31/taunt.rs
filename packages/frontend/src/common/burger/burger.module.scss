@@ -1,0 +1,64 @@
+@use "palette" as *;
+
+.burgerContainer {
+    --burger-width: clamp(20px, 5.5vw, 28px);
+    --burger-height: calc(var(--burger-width) * 0.72);
+    --burger-thickness: clamp(2px, 0.55vw, 3px);
+
+    padding: 6px;
+    background-color: transparent;
+    border: none;
+    outline: 2px solid transparent;
+    border-radius: 6px;
+    cursor: pointer;
+    aspect-ratio: 1 / 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: outline-color 0.2s cubic-bezier(0, 1, 1, 0.95);
+
+    &:focus-visible {
+        outline-color: $primary;
+
+        .line {
+            background-color: $background1;
+        }
+    }
+
+    &:hover .line {
+        background-color: $background1;
+    }
+}
+
+.burger {
+    width: var(--burger-width);
+    height: var(--burger-height);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    box-sizing: border-box;
+}
+
+.line {
+    width: 100%;
+    height: var(--burger-thickness);
+    background-color: $background1;
+    border-radius: 2px;
+    transition:
+        transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+        opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+        background-color 0.2s ease;
+}
+
+.open .line:nth-child(1) {
+    transform: translateY(calc(var(--burger-height) / 2 - var(--burger-thickness) / 2)) rotate(45deg);
+}
+
+.open .line:nth-child(2) {
+    opacity: 0;
+}
+
+.open .line:nth-child(3) {
+    transform: translateY(calc((var(--burger-height) / -2) + (var(--burger-thickness) / 2))) rotate(-45deg);
+}
