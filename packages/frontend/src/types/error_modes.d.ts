@@ -12,10 +12,11 @@ export type GenericAuthErrorModes =
     | "DATABASE_ERROR";
 
 export type RecaptchaErrorModes =
+    | "RECAPTCHA_UNKNOWN_REMOTE_ADDRESS"
     | "RECAPTCHA_REQWEST_ERROR"
     | "RECAPTCHA_REQUEST_STATUS_ERROR"
     | "RECAPTCHA_DESERIALIZATION_ERROR"
-    | "RECAPTCHA_RESPONSE_ERROR"
+    | "RECAPTCHA_REQUEST_ERROR"
     | "RECAPTCHA_VERIFICATION_FAILED";
 
 export type LoginErrorModes =
@@ -29,9 +30,16 @@ export type RegisterErrorModes =
     | "DATABASE_ERROR"
     | RecaptchaErrorModes;
 
+export type MeErrorModes =
+    | "ME_MISSING_AUTHORIZATION"
+    | "ME_INVALID_TOKEN"
+    | "ME_USER_NOT_FOUND"
+    | "DATABASE_ERROR";
+
 export type ErrorModes =
     | NetworkErrorMode
     | ApiErrorMode
     | GenericAuthErrorModes
     | LoginErrorModes
-    | RegisterErrorModes;
+    | RegisterErrorModes
+    | MeErrorModes;

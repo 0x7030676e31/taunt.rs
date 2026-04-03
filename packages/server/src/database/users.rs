@@ -19,6 +19,7 @@ use crate::{
 pub struct User {
     pub user_id: u32,
     pub email: String,
+    #[serde(skip)]
     pub password_hash: String,
     #[serde(serialize_with = "serialize_datetime_as_millis")]
     pub created_at: DateTime<Utc>,
@@ -320,6 +321,13 @@ impl UsersTable {
         sqlx::query_as::<_, User>("SELECT * FROM users WHERE email = ? AND password_hash = ?")
             .bind(email)
             .bind(password_hash_hex)
+            .fetch_optional(&self.pool)
+            .await
+    }
+
+    pub async fn get_user_by_id(&self, user_id: u32) -> sqlx::Result<Option<User>> {
+        sqlx::query_as::<_, User>("SELECT * FROM users WHERE user_id = ?")
+            .bind(user_id as i64)
             .fetch_optional(&self.pool)
             .await
     }

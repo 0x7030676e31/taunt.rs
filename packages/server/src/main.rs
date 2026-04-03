@@ -6,7 +6,10 @@ use actix_web::{App, HttpServer, web};
 use log::info;
 use sqlx::{SqlitePool, sqlite::SqliteConnectOptions};
 
-use crate::database::{token::TokensTable, users::UsersTable};
+use crate::{
+    core::cors::Cors,
+    database::{token::TokensTable, users::UsersTable},
+};
 
 mod api;
 mod configuration;
@@ -41,6 +44,7 @@ async fn main() -> io::Result<()> {
             .app_data(users_table.clone())
             .app_data(tokens_table.clone())
             .service(api::routes(config.clone()))
+            .wrap(Cors)
     })
     .bind(host_and_port)?
     .run()

@@ -20,6 +20,7 @@ import Layout from "./common/layout";
 import { AccountContextProvider } from "./providers/account";
 import { SocketProviderContext } from "./providers/socket";
 import { I18nProvider } from "./locales/i18n";
+import Notifications from "./notifications";
 
 const AppLayout = (props: { children?: JSX.Element }) => {
     return (
@@ -44,6 +45,7 @@ const DashboardLayout = (props: { children?: JSX.Element }) => {
 export default function App() {
     return (
         <I18nProvider>
+            <Notifications />
             <Router>
                 <Route component={AppLayout}>
                     <Route path="/" component={Home} />

@@ -10,29 +10,32 @@ interface PasswordInputProps {
     error?: string;
     class?: string;
     inputClass?: string;
+    disabled?: boolean;
 }
 
 export default function PasswordInput(
     props: PasswordInputProps & Omit<JSX.InputHTMLAttributes<HTMLInputElement>, "class" | "type">
 ) {
-    const [local, inputProps] = splitProps(props, ["label", "error", "class", "inputClass", "id"]);
+    const [local, inputProps] = splitProps(props, ["label", "error", "class", "inputClass", "id", "disabled"]);
     const [visible, setVisible] = createSignal(false);
     const generatedId = createUniqueId();
     const inputId = () => local.id ?? generatedId;
 
     return (
-        <label class={`${styles.fieldLabel} ${local.class ?? ""}`} for={inputId()}>
+        <label class={`${styles.fieldLabel} ${local.disabled ? styles.fieldDisabled : ""} ${local.class ?? ""}`} for={inputId()}>
             {local.label}
             <div class={styles.inputShell}>
                 <input
                     {...inputProps}
                     id={inputId()}
+                    disabled={local.disabled}
                     type={visible() ? "text" : "password"}
                     class={`${styles.inputField} ${styles.inputWithAction} ${local.error ? styles.inputInvalid : ""} ${local.inputClass ?? ""}`}
                 />
                 <button
                     type="button"
                     class={styles.actionButton}
+                    disabled={local.disabled}
                     onClick={() => setVisible(prev => !prev)}
                     aria-label={visible() ? "Hide password" : "Show password"}
                 >

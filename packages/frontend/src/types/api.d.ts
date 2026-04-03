@@ -36,6 +36,7 @@ declare global {
         export type LoginResponse = {
             token: string;
             user: Objects.User;
+            tokenExpiryAtMs: number;
         };
 
         // POST /auth/register
@@ -43,6 +44,14 @@ declare global {
         export type RegisterResponse = {
             token: string;
             user: Objects.User;
+            tokenExpiryAtMs: number;
+        };
+
+        // GET /auth/me
+        export type MeError = ResponseError<modes.MeErrorModes>;
+        export type MeResponse = {
+            user: Objects.User;
+            tokenExpiryAtMs: number;
         };
     }
 

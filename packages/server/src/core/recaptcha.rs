@@ -32,7 +32,7 @@ impl From<RecaptchaError> for ErrorResponse {
                 .set_message("The request does not contain a valid remote address.")
                 .build(),
             RecaptchaError::ReqwestError(e) => ErrorResponseBuilder::internal_server_error()
-                .set_status("RECAPTCHA_REQUEST_ERROR") // [API ERROR]
+                .set_status("RECAPTCHA_REQWEST_ERROR") // [API ERROR]
                 .set_message(format!(
                     "An error occurred while verifying recaptcha: {}",
                     e
@@ -66,8 +66,8 @@ impl From<RecaptchaError> for ErrorResponse {
 
 pub async fn recaptcha_score(
     req: &HttpRequest,
-    key: impl AsRef<str>,
     token: impl AsRef<str>,
+    key: impl AsRef<str>,
 ) -> Result<f32, RecaptchaError> {
     let remote_addr = {
         let connection_info = req.connection_info();
