@@ -70,7 +70,7 @@ async fn login(
         Ok(Some(user)) => user,
         Ok(None) => {
             return ErrorResponseBuilder::bad_request()
-                .set_status("INVALID_CREDENTIALS")
+                .set_status("LOGIN_INVALID_CREDENTIALS")
                 .set_message("Invalid email or password.")
                 .build()
                 .into();
@@ -141,6 +141,7 @@ async fn register(
 
     if !validate_email(&email) {
         return ErrorResponseBuilder::bad_request()
+            .set_status("REGISTER_INVALID_EMAIL_FORMAT")
             .set_message("Invalid email format.")
             .build()
             .into();
@@ -148,6 +149,7 @@ async fn register(
 
     if let Err(e) = validate_password(&password) {
         return ErrorResponseBuilder::bad_request()
+            .set_status("REGISTER_WEAK_PASSWORD")
             .set_message(e)
             .build()
             .into();
