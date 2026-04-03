@@ -13,13 +13,125 @@
 }
 
 .navbar {
+    position: relative;
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: flex-end;
-    padding: 1rem 0;
+    padding: 1rem 3rem;
     background-color: $background0;
+    overflow: visible;
+}
+
+.logoLink {
+    position: absolute;
+    left: 1.5rem;
+    top: 0;
+    bottom: 0;
+    display: inline-flex;
+    align-items: center;
+    text-decoration: none;
+}
+
+.logo {
+    height: 100%;
+    width: auto;
+    display: block;
+}
+
+.navLinks {
+    display: inline-flex;
+    align-items: center;
     gap: 3rem;
+}
+
+.languageDropdown {
+    position: relative;
+    outline: none;
+}
+
+.languageTrigger {
+    border: 1px solid color.scale($background1, $lightness: -35%);
+    background: color.scale($background0, $lightness: -12%);
+    color: $background1;
+    border-radius: 999px;
+    padding: 0.45rem 0.8rem;
+    min-width: 146px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.65rem;
+    cursor: pointer;
+    transition:
+        background-color 0.2s $cubic,
+        border-color 0.2s $cubic;
+
+    &:hover {
+        background: color.scale($background0, $lightness: -20%);
+        border-color: color.scale($primary, $lightness: -5%);
+    }
+}
+
+.languageLabel {
+    font-size: 0.95rem;
+    font-weight: 700;
+}
+
+.flag {
+    width: 1.25rem;
+    height: 0.9rem;
+    border-radius: 3px;
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.18);
+}
+
+.chevron {
+    font-size: 0.85rem;
+    color: color.scale($background1, $lightness: -15%);
+    transform: translateY(-1px) rotate(0deg);
+    transition: transform 0.2s ease;
+}
+
+.chevronOpen {
+    transform: translateY(-1px) rotate(180deg);
+}
+
+.languageMenu {
+    position: absolute;
+    top: calc(100% + 0.55rem);
+    right: 0;
+    min-width: 186px;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    padding: 0.4rem;
+    border-radius: 0.75rem;
+    border: 1px solid color.scale($background1, $lightness: -35%);
+    background: color.scale($background0, $lightness: -18%);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+    z-index: 10;
+}
+
+.languageOption {
+    border: none;
+    background: transparent;
+    color: $background1;
+    border-radius: 0.55rem;
+    padding: 0.55rem 0.65rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 0.92rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-align: left;
+
+    &:hover {
+        background: color.scale($background0, $lightness: -30%);
+    }
+}
+
+.languageOptionActive {
+    background: color.scale($primary, $lightness: -45%);
 }
 
 .navbarItem {
@@ -65,7 +177,6 @@
     font-weight: 500;
     cursor: pointer;
     transition: background-color 0.2s $cubic;
-    margin-right: 3rem;
     display: flex;
     align-items: center;
     gap: 0.5rem;

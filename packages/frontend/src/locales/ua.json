@@ -1,9 +1,10 @@
 {
-    "login": "Login",
-    "logout": "Logout",
-    "Register": "Register",
-    "navbar.home": "Home",
-    "navbar.adopt": "Adopt",
-    "navbar.donate": "Donate",
-    "home.catCaption": "DNIPRO ANIMALS"
+    "login": "Увійти",
+    "logout": "Вийти",
+    "Register": "Реєстрація",
+    "navbar.home": "Головна",
+    "navbar.adopt": "Прихистити",
+    "navbar.donate": "Підтримати",
+    "home.catCaption": "ТВАРИНИ ДНІПРА",
+    "home.support": "ДОПОМОГТИ"
 }
