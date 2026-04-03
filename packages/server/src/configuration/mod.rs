@@ -1,8 +1,7 @@
-use std::{error::Error, fmt::Display, fs, path::PathBuf, rc::Rc};
+use std::{error::Error, fmt::Display, fs, path::PathBuf, rc::Rc, sync::Arc};
 
 use itertools::Itertools;
 use literator::Literator;
-use serde::de::IntoDeserializer;
 use sha2::{Digest, Sha256};
 use xshell::cmd;
 
@@ -25,7 +24,7 @@ pub enum Source {
     /// structure that Rust's references can't yet deal with.
     ///
     /// The second parameter is the name of the option as it's defined in the file.
-    TomlFileOption(Rc<PathBuf>, &'static str),
+    TomlFileOption(Arc<PathBuf>, &'static str),
     /// The source of all default values.
     Default,
 }
@@ -291,7 +290,7 @@ impl<T> ConfigurationOption<T> {
 /// checked when the configuration is assembled since it's easier to do it all in one place than
 /// per provider.
 pub struct ConfigurationOptions {
-    configuration_file_path: ConfigurationOption<Rc<PathBuf>>,
+    configuration_file_path: ConfigurationOption<Arc<PathBuf>>,
     log_level: ConfigurationOption<log::Level>,
     port: ConfigurationOption<u16>,
     host: ConfigurationOption<String>,
@@ -304,13 +303,13 @@ pub struct ConfigurationOptions {
 
 /// A collection of paths to static assets that have been checked for existance on server startup
 pub struct StaticAssetPaths {
-    index: PathBuf,
+    pub index: PathBuf,
 }
 
 /// The configuration of the app
 pub struct AppConfiguration {
     /// The path to the provided configuration file
-    pub configuration_file_path: Option<ProvidedOption<Rc<PathBuf>>>,
+    pub configuration_file_path: Option<ProvidedOption<Arc<PathBuf>>>,
     /// The log level for the server to use
     pub log_level: ProvidedOption<log::Level>,
     /// The port for the server to run on
@@ -644,11 +643,11 @@ pub fn build() -> Result<AppConfiguration, ConfigurationError> {
     let cli_args = cli_arguments::parse_or_exit();
     let configuration_file_path = ConfigurationOption::via(
         Source::CLIArgument("--config", false),
-        cli_args.1.config.clone().map(Rc::new).clone(),
+        cli_args.1.config.clone().map(Arc::new).clone(),
     )
     .override_with(ConfigurationOption::via(
         Source::EnvVariable("CONFIG"),
-        env_vars.config.clone().map(Rc::new).clone(),
+        env_vars.config.clone().map(Arc::new).clone(),
     ));
 
     let env_options = env_vars.into();

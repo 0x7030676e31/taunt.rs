@@ -1,4 +1,4 @@
-use std::{fs::File, io::Read, os::unix::fs::MetadataExt, path::PathBuf, rc::Rc};
+use std::{fs::File, io::Read, os::unix::fs::MetadataExt, path::PathBuf, rc::Rc, sync::Arc};
 
 use const_format::formatcp;
 
@@ -15,7 +15,7 @@ pub struct ConfigFileOptions {
     static_assets: Option<PathBuf>,
 }
 
-impl Into<ConfigurationOptions> for (ProvidedOption<Rc<PathBuf>>, ConfigFileOptions) {
+impl Into<ConfigurationOptions> for (ProvidedOption<Arc<PathBuf>>, ConfigFileOptions) {
     fn into(self) -> ConfigurationOptions {
         use super::ConfigurationOption;
         let file_path = self.0.value.clone();
@@ -40,8 +40,8 @@ impl Into<ConfigurationOptions> for (ProvidedOption<Rc<PathBuf>>, ConfigFileOpti
 const SAFE_CONFIG_FILE_SIZE: u64 = 0x10000;
 
 pub fn parse(
-    configuration_file_path: ConfigurationOption<Rc<PathBuf>>,
-) -> Result<Option<(ProvidedOption<Rc<PathBuf>>, ConfigFileOptions)>, ConfigurationError> {
+    configuration_file_path: ConfigurationOption<Arc<PathBuf>>,
+) -> Result<Option<(ProvidedOption<Arc<PathBuf>>, ConfigFileOptions)>, ConfigurationError> {
     configuration_file_path.try_as_provided().map_or_else(
         || Ok(None),
         |opt| {
