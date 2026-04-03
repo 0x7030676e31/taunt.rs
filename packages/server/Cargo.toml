@@ -22,7 +22,7 @@ toml = "1.1.0+spec-1.1.0"
 actix-web = "4"
 xshell = "0.2.7"
 tokio = { version = "1.51.0", features = ["macros", "sync"] }
-sqlx = { version = "0.8.6", features = ["tls-native-tls", "sqlite"] }
+sqlx = { version = "0.8.6", features = ["tls-native-tls", "sqlite", "runtime-tokio"] }
 reqwest = "0.13.2"
 actix-ws = "0.4.0"
 chrono = "0.4.44"
