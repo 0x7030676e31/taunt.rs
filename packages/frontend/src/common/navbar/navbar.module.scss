@@ -1,6 +1,17 @@
 @use "palette" as *;
 @use "sass:color";
 
+.app {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.content {
+    flex: 1;
+    overflow-y: auto;
+}
+
 .navbar {
     display: flex;
     flex-direction: row;
