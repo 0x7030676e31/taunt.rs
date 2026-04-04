@@ -72,6 +72,7 @@ declare global {
             name: string;
             ageMonths: number;
             gender: "male" | "female";
+            status: "available" | "adopted" | "pending";
             species: string;
             description: string;
             imageUrl: string;

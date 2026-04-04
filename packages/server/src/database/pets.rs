@@ -31,12 +31,44 @@ impl From<Gender> for &str {
 }
 
 #[derive(Serialize)]
+#[serde(rename_all = "lowercase")]
+pub enum PetStatus {
+    Available,
+    Adopted,
+    Pending,
+}
+
+impl TryFrom<String> for PetStatus {
+    type Error = String;
+
+    fn try_from(value: String) -> Result<Self, Self::Error> {
+        match value.to_lowercase().as_str() {
+            "available" => Ok(PetStatus::Available),
+            "adopted" => Ok(PetStatus::Adopted),
+            "pending" => Ok(PetStatus::Pending),
+            _ => Err(format!("Invalid status value: {}", value)),
+        }
+    }
+}
+
+impl From<PetStatus> for &str {
+    fn from(status: PetStatus) -> Self {
+        match status {
+            PetStatus::Available => "available",
+            PetStatus::Adopted => "adopted",
+            PetStatus::Pending => "pending",
+        }
+    }
+}
+
+#[derive(Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Pet {
     pub pet_id: u32,
     pub name: String,
     pub age_months: u32,
     pub gender: Gender,
+    pub status: PetStatus,
     pub species: String,
     pub description: String,
     pub image_url: String,
@@ -71,6 +103,11 @@ where
             index: "gender".to_string(),
             source: e.into(),
         })?;
+        let status_str = row.try_get::<String, _>("status")?;
+        let status = PetStatus::try_from(status_str).map_err(|e| sqlx::Error::ColumnDecode {
+            index: "status".to_string(),
+            source: e.into(),
+        })?;
         let species = row.try_get::<String, _>("species")?;
         let description = row.try_get::<String, _>("description")?;
         let image_url = row.try_get::<String, _>("image_url")?;
@@ -96,6 +133,7 @@ where
             name,
             age_months,
             gender,
+            status,
             species,
             description,
             image_url,
@@ -125,12 +163,14 @@ impl PetsTable {
     ) -> Result<Pet, sqlx::Error> {
         let created_at_ms = Utc::now().timestamp_millis();
         let gender_str: &str = gender.into();
+        let status_str: &str = PetStatus::Available.into();
         sqlx::query_as::<_, Pet>(
-            "INSERT INTO pets (name, age_months, gender, species, description, image_url, created_at_ms, updated_at_ms) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            "INSERT INTO pets (name, age_months, gender, status, species, description, image_url, created_at_ms, updated_at_ms) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
              RETURNING *",
         )        .bind(name.as_ref())
         .bind(age_months as i64)
         .bind(gender_str)
+        .bind(status_str)
         .bind(species.as_ref())
         .bind(description.as_ref())
         .bind(image_url.as_ref())
