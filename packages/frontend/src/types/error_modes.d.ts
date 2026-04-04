@@ -29,12 +29,16 @@ export type RegisterErrorModes =
     | "REGISTER_USER_EMAIL_CONFLICT"
     | "DATABASE_ERROR"
     | RecaptchaErrorModes;
-
 export type MeErrorModes =
     | "ME_MISSING_AUTHORIZATION"
     | "ME_INVALID_TOKEN"
     | "ME_USER_NOT_FOUND"
-    | "DATABASE_ERROR";
+    | "DATABASE_ERROR"
+    | GenericAuthErrorModes;
+
+export type CreatePetErrorModes =
+    | "DATABASE_ERROR"
+    | GenericAuthErrorModes;
 
 export type ErrorModes =
     | NetworkErrorMode
@@ -42,4 +46,5 @@ export type ErrorModes =
     | GenericAuthErrorModes
     | LoginErrorModes
     | RegisterErrorModes
-    | MeErrorModes;
+    | MeErrorModes
+    | CreatePetErrorModes;

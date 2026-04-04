@@ -42,6 +42,8 @@ pub struct Pet {
     pub image_url: String,
     #[serde(serialize_with = "serialize_datetime_as_millis")]
     pub created_at: DateTime<Utc>,
+    #[serde(serialize_with = "serialize_datetime_as_millis")]
+    pub updated_at: DateTime<Utc>,
 }
 
 fn serialize_datetime_as_millis<S>(date: &DateTime<Utc>, serializer: S) -> Result<S::Ok, S::Error>
@@ -80,6 +82,14 @@ where
                 index: "created_at_ms".to_string(),
                 source: "Invalid timestamp".into(),
             })?;
+        let updated_at_ms = row.try_get::<i64, _>("updated_at_ms")?;
+        let updated_at = Utc
+            .timestamp_millis_opt(updated_at_ms)
+            .single()
+            .ok_or_else(|| sqlx::Error::ColumnDecode {
+                index: "updated_at_ms".to_string(),
+                source: "Invalid timestamp".into(),
+            })?;
 
         Ok(Pet {
             pet_id,
@@ -90,6 +100,7 @@ where
             description,
             image_url,
             created_at,
+            updated_at,
         })
     }
 }
@@ -101,5 +112,30 @@ pub struct PetsTable {
 impl PetsTable {
     pub fn new(pool: SqlitePool) -> Self {
         PetsTable { pool }
+    }
+
+    pub async fn create_pet(
+        &self,
+        name: impl AsRef<str>,
+        age_months: u32,
+        gender: Gender,
+        species: impl AsRef<str>,
+        description: impl AsRef<str>,
+        image_url: impl AsRef<str>,
+    ) -> Result<Pet, sqlx::Error> {
+        let created_at_ms = Utc::now().timestamp_millis();
+        let gender_str: &str = gender.into();
+        sqlx::query_as::<_, Pet>(
+            "INSERT INTO pets (name, age_months, gender, species, description, image_url, created_at_ms) VALUES (?, ?, ?, ?, ?, ?, ?)
+             RETURNING *",
+        )        .bind(name.as_ref())
+        .bind(age_months as i64)
+        .bind(gender_str)
+        .bind(species.as_ref())
+        .bind(description.as_ref())
+        .bind(image_url.as_ref())
+        .bind(created_at_ms)
+        .fetch_one(&self.pool)
+        .await
     }
 }
