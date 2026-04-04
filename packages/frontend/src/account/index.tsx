@@ -1,4 +1,4 @@
-import { createContext, type JSX, type Accessor, type Setter, createSignal, useContext, batch, onMount } from "solid-js";
+import { createContext, type JSX, type Accessor, type Setter, createSignal, useContext, batch, onMount, createEffect, on } from "solid-js";
 import { addNotification } from "@/notifications";
 import { useI18n } from "@/locales/i18n";
 import req from "@/req";
@@ -10,6 +10,7 @@ export interface AccountContext {
     setToken: Setter<string | null>;
     invalidateTokenIn: (ms: number) => void;
     logout: () => void;
+    ready: Accessor<boolean>;
 }
 
 export const accountContext = createContext<AccountContext>();
@@ -18,10 +19,12 @@ interface AccountProviderProps {
     children?: JSX.Element | JSX.Element[];
 }
 
+let isFirst = true;
 export function AccountContextProvider(props: AccountProviderProps) {
     const [t] = useI18n();
     const [currentUser, setCurrentUser] = createSignal<Objects.User | null>(null);
     const [token, setToken] = createSignal<string | null>(null);
+    const [ready, setReady] = createSignal(false);
     const location = useLocation();
 
     function logout() {
@@ -46,6 +49,14 @@ export function AccountContextProvider(props: AccountProviderProps) {
             logout();
         }, ms);
     }
+
+    createEffect(on([currentUser, token], ([current, token]) => {
+        const isReady = Boolean(current && token);
+        if (isReady && isFirst) {
+            isFirst = false;
+            setReady(true);
+        }
+    }));
 
     onMount(() => {
         const storedToken = localStorage.getItem("token");
@@ -93,7 +104,7 @@ export function AccountContextProvider(props: AccountProviderProps) {
     });
 
     return (
-        <accountContext.Provider value={{ currentUser, setCurrentUser, token, setToken, logout, invalidateTokenIn }}>
+        <accountContext.Provider value={{ currentUser, setCurrentUser, token, setToken, logout, invalidateTokenIn, ready }}>
             {props.children}
         </accountContext.Provider>
     );

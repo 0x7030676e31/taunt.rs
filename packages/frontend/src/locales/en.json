@@ -107,5 +107,15 @@
     "create_pet.defaultDescription": "Enter a description for the pet to see preview.",
     "create_pet.success": "Pet created successfully!",
     "create_pet.successSub": "{{name}} has been added to the database.",
-    "PET_NOT_FOUND": "Pet not found"
+    "PET_NOT_FOUND": "Pet not found",
+    "pets.title": "Our Pets",
+    "pets.searchPlaceholder": "Search by name...",
+    "pets.filterAll": "All",
+    "pets.filterAvailable": "Available",
+    "pets.filterPending": "Pending",
+    "pets.filterAdopted": "Adopted",
+    "pets.noPets": "No pets found matching your criteria.",
+    "pets.status.available": "Available",
+    "pets.status.pending": "Pending",
+    "pets.status.adopted": "Adopted"
 }

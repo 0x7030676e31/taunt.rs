@@ -165,7 +165,7 @@ impl PetsTable {
         let gender_str: &str = gender.into();
         let status_str: &str = PetStatus::Available.into();
         sqlx::query_as::<_, Pet>(
-            "INSERT INTO pets (name, age_months, gender, status, species, description, image_url, created_at_ms, updated_at_ms) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            "INSERT INTO pets (name, age_months, gender, status, species, description, image_url, created_at_ms, updated_at_ms) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
              RETURNING *",
         )        .bind(name.as_ref())
         .bind(age_months as i64)
@@ -181,7 +181,7 @@ impl PetsTable {
     }
 
     pub async fn get_all_pets(&self) -> Result<Vec<Pet>, sqlx::Error> {
-        sqlx::query_as::<_, Pet>("SELECT * FROM pets")
+        sqlx::query_as::<_, Pet>("SELECT * FROM pets ORDER BY created_at_ms DESC")
             .fetch_all(&self.pool)
             .await
     }

@@ -1,0 +1,88 @@
+"filename", "language", "Markdown", "Rust", "TOML", "JSON", "TypeScript", "TypeScript JSX", "SCSS", "Dotenv", "XML", "JSON with Comments", "HTML", "MS SQL", "comment", "blank", "total"
+"/home/endeavour/@projects/tauntrs/docs/toolchain.md", "Markdown", 12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 13
+"/home/endeavour/@projects/tauntrs/packages/frontend/.env", "Dotenv", 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1
+"/home/endeavour/@projects/tauntrs/packages/frontend/bun.lock", "JSON with Comments", 0, 0, 0, 0, 0, 0, 0, 0, 0, 161, 0, 0, 0, 133, 294
+"/home/endeavour/@projects/tauntrs/packages/frontend/index.html", "HTML", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 14, 0, 0, 0, 14
+"/home/endeavour/@projects/tauntrs/packages/frontend/package.json", "JSON", 0, 0, 0, 29, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 29
+"/home/endeavour/@projects/tauntrs/packages/frontend/public/favicon.svg", "XML", 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1
+"/home/endeavour/@projects/tauntrs/packages/frontend/src/account/index.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 102, 0, 0, 0, 0, 0, 0, 0, 18, 120
+"/home/endeavour/@projects/tauntrs/packages/frontend/src/app.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 61, 0, 0, 0, 0, 0, 0, 0, 7, 68
+"/home/endeavour/@projects/tauntrs/packages/frontend/src/common/burger/burger.module.scss", "SCSS", 0, 0, 0, 0, 0, 0, 54, 0, 0, 0, 0, 0, 0, 11, 65
+"/home/endeavour/@projects/tauntrs/packages/frontend/src/common/burger/index.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 24, 0, 0, 0, 0, 0, 0, 0, 4, 28
+"/home/endeavour/@projects/tauntrs/packages/frontend/src/common/inputs/input.module.scss", "SCSS", 0, 0, 0, 0, 0, 0, 115, 0, 0, 0, 0, 0, 0, 18, 133
+"/home/endeavour/@projects/tauntrs/packages/frontend/src/common/inputs/password-input.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 48, 0, 0, 0, 0, 0, 0, 0, 5, 53
+"/home/endeavour/@projects/tauntrs/packages/frontend/src/common/inputs/text-input.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 33, 0, 0, 0, 0, 0, 0, 0, 5, 38
+"/home/endeavour/@projects/tauntrs/packages/frontend/src/common/inputs/textarea-input.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 33, 0, 0, 0, 0, 0, 0, 0, 5, 38
+"/home/endeavour/@projects/tauntrs/packages/frontend/src/common/layout/index.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 44, 0, 0, 0, 0, 0, 0, 0, 7, 51
+"/home/endeavour/@projects/tauntrs/packages/frontend/src/common/layout/layout.module.scss", "SCSS", 0, 0, 0, 0, 0, 0, 165, 0, 0, 0, 0, 0, 0, 28, 193
+"/home/endeavour/@projects/tauntrs/packages/frontend/src/common/modal/index.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 29, 0, 0, 0, 0, 0, 0, 0, 4, 33
+"/home/endeavour/@projects/tauntrs/packages/frontend/src/common/modal/modal.module.scss", "SCSS", 0, 0, 0, 0, 0, 0, 100, 0, 0, 0, 0, 0, 0, 16, 116
+"/home/endeavour/@projects/tauntrs/packages/frontend/src/common/navbar/index.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 552, 0, 0, 0, 0, 0, 0, 3, 63, 618
+"/home/endeavour/@projects/tauntrs/packages/frontend/src/common/navbar/navbar.module.scss", "SCSS", 0, 0, 0, 0, 0, 0, 574, 0, 0, 0, 0, 0, 0, 81, 655
+"/home/endeavour/@projects/tauntrs/packages/frontend/src/global.ts", "TypeScript", 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 1, 4
+"/home/endeavour/@projects/tauntrs/packages/frontend/src/index.scss", "SCSS", 0, 0, 0, 0, 0, 0, 16, 0, 0, 0, 0, 0, 0, 4, 20
+"/home/endeavour/@projects/tauntrs/packages/frontend/src/index.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 6, 0, 0, 0, 0, 0, 0, 1, 2, 9
+"/home/endeavour/@projects/tauntrs/packages/frontend/src/locales/en.json", "JSON", 0, 0, 0, 121, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 121
+"/home/endeavour/@projects/tauntrs/packages/frontend/src/locales/i18n.ts", "TypeScript", 0, 0, 0, 0, 41, 0, 0, 0, 0, 0, 0, 0, 0, 12, 53
+"/home/endeavour/@projects/tauntrs/packages/frontend/src/locales/ua.json", "JSON", 0, 0, 0, 121, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 121
+"/home/endeavour/@projects/tauntrs/packages/frontend/src/notifications/index.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 116, 0, 0, 0, 0, 0, 0, 0, 22, 138
+"/home/endeavour/@projects/tauntrs/packages/frontend/src/notifications/notifications.module.scss", "SCSS", 0, 0, 0, 0, 0, 0, 141, 0, 0, 0, 0, 0, 0, 30, 171
+"/home/endeavour/@projects/tauntrs/packages/frontend/src/pages/adopt/adopt.module.scss", "SCSS", 0, 0, 0, 0, 0, 0, 230, 0, 0, 0, 0, 0, 0, 34, 264
+"/home/endeavour/@projects/tauntrs/packages/frontend/src/pages/adopt/index.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 161, 0, 0, 0, 0, 0, 0, 0, 18, 179
+"/home/endeavour/@projects/tauntrs/packages/frontend/src/pages/adopt_pet/adopt_pet.module.scss", "SCSS", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1
+"/home/endeavour/@projects/tauntrs/packages/frontend/src/pages/adopt_pet/index.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 0, 0, 5
+"/home/endeavour/@projects/tauntrs/packages/frontend/src/pages/application/application.module.scss", "SCSS", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1
+"/home/endeavour/@projects/tauntrs/packages/frontend/src/pages/application/index.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 0, 1, 6
+"/home/endeavour/@projects/tauntrs/packages/frontend/src/pages/applications/applications.module.scss", "SCSS", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1
+"/home/endeavour/@projects/tauntrs/packages/frontend/src/pages/applications/index.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 0, 1, 6
+"/home/endeavour/@projects/tauntrs/packages/frontend/src/pages/create_pet/create_pet.module.scss", "SCSS", 0, 0, 0, 0, 0, 0, 211, 0, 0, 0, 0, 0, 1, 30, 242
+"/home/endeavour/@projects/tauntrs/packages/frontend/src/pages/create_pet/index.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 282, 0, 0, 0, 0, 0, 0, 0, 40, 322
+"/home/endeavour/@projects/tauntrs/packages/frontend/src/pages/dashboard/dashboard.module.scss", "SCSS", 0, 0, 0, 0, 0, 0, 107, 0, 0, 0, 0, 0, 0, 15, 122
+"/home/endeavour/@projects/tauntrs/packages/frontend/src/pages/dashboard/index.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 35, 0, 0, 0, 0, 0, 0, 0, 6, 41
+"/home/endeavour/@projects/tauntrs/packages/frontend/src/pages/donations/donations.module.scss", "SCSS", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1
+"/home/endeavour/@projects/tauntrs/packages/frontend/src/pages/donations/index.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 0, 1, 6
+"/home/endeavour/@projects/tauntrs/packages/frontend/src/pages/home/home.module.scss", "SCSS", 0, 0, 0, 0, 0, 0, 348, 0, 0, 0, 0, 0, 0, 52, 400
+"/home/endeavour/@projects/tauntrs/packages/frontend/src/pages/home/index.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 217, 0, 0, 0, 0, 0, 0, 2, 26, 245
+"/home/endeavour/@projects/tauntrs/packages/frontend/src/pages/pet/index.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 0, 1, 6
+"/home/endeavour/@projects/tauntrs/packages/frontend/src/pages/pet/pet.module.scss", "SCSS", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1
+"/home/endeavour/@projects/tauntrs/packages/frontend/src/pages/pets/index.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 145, 0, 0, 0, 0, 0, 0, 0, 14, 159
+"/home/endeavour/@projects/tauntrs/packages/frontend/src/pages/pets/pets.module.scss", "SCSS", 0, 0, 0, 0, 0, 0, 226, 0, 0, 0, 0, 0, 0, 34, 260
+"/home/endeavour/@projects/tauntrs/packages/frontend/src/palette.scss", "SCSS", 0, 0, 0, 0, 0, 0, 21, 0, 0, 0, 0, 0, 0, 3, 24
+"/home/endeavour/@projects/tauntrs/packages/frontend/src/req.ts", "TypeScript", 0, 0, 0, 0, 137, 0, 0, 0, 0, 0, 0, 0, 0, 30, 167
+"/home/endeavour/@projects/tauntrs/packages/frontend/src/types/api.d.ts", "TypeScript", 0, 0, 0, 0, 74, 0, 0, 0, 0, 0, 0, 0, 6, 13, 93
+"/home/endeavour/@projects/tauntrs/packages/frontend/src/types/error_modes.d.ts", "TypeScript", 0, 0, 0, 0, 49, 0, 0, 0, 0, 0, 0, 0, 0, 6, 55
+"/home/endeavour/@projects/tauntrs/packages/frontend/src/types/globals.d.ts", "TypeScript", 0, 0, 0, 0, 10, 0, 0, 0, 0, 0, 0, 0, 0, 2, 12
+"/home/endeavour/@projects/tauntrs/packages/frontend/tsconfig.app.json", "JSON", 0, 0, 0, 28, 0, 0, 0, 0, 0, 0, 0, 0, 3, 4, 35
+"/home/endeavour/@projects/tauntrs/packages/frontend/tsconfig.json", "JSON with Comments", 0, 0, 0, 0, 0, 0, 0, 0, 0, 7, 0, 0, 0, 1, 8
+"/home/endeavour/@projects/tauntrs/packages/frontend/tsconfig.node.json", "JSON", 0, 0, 0, 22, 0, 0, 0, 0, 0, 0, 0, 0, 2, 3, 27
+"/home/endeavour/@projects/tauntrs/packages/frontend/vite.config.ts", "TypeScript", 0, 0, 0, 0, 12, 0, 0, 0, 0, 0, 0, 0, 0, 2, 14
+"/home/endeavour/@projects/tauntrs/packages/server/.sqlx/query-370d2b99bcfc915f0a00067028dd650f94df627886427cd0bb61f6587037eb13.json", "JSON", 0, 0, 0, 12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 13
+"/home/endeavour/@projects/tauntrs/packages/server/.sqlx/query-9a706633c34795aff79c54491f6988905f10d5adfd526ffc51ec929822caa333.json", "JSON", 0, 0, 0, 20, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 21
+"/home/endeavour/@projects/tauntrs/packages/server/.sqlx/query-ade9b9d3179d09de6431767ff2b5ff0a00665288c469c73c7bbdc8feb140aa77.json", "JSON", 0, 0, 0, 20, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 21
+"/home/endeavour/@projects/tauntrs/packages/server/.sqlx/query-f6051039884b64aee51fe21dedf5acf8b47f5e2affbc81088af0ccbad043db50.json", "JSON", 0, 0, 0, 12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 13
+"/home/endeavour/@projects/tauntrs/packages/server/Cargo.lock", "TOML", 0, 0, 4104, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 452, 4558
+"/home/endeavour/@projects/tauntrs/packages/server/Cargo.toml", "TOML", 0, 0, 34, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 37
+"/home/endeavour/@projects/tauntrs/packages/server/rustfmt.toml", "TOML", 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 4
+"/home/endeavour/@projects/tauntrs/packages/server/schema.sql", "MS SQL", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 49, 0, 7, 56
+"/home/endeavour/@projects/tauntrs/packages/server/src/api/error_response.rs", "Rust", 0, 161, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 24, 185
+"/home/endeavour/@projects/tauntrs/packages/server/src/api/file_stream.rs", "Rust", 0, 149, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 25, 174
+"/home/endeavour/@projects/tauntrs/packages/server/src/api/mod.rs", "Rust", 0, 61, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 67
+"/home/endeavour/@projects/tauntrs/packages/server/src/api/public.rs", "Rust", 0, 37, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 12, 49
+"/home/endeavour/@projects/tauntrs/packages/server/src/api/routes/applications.rs", "Rust", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1
+"/home/endeavour/@projects/tauntrs/packages/server/src/api/routes/auth.rs", "Rust", 0, 239, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 26, 265
+"/home/endeavour/@projects/tauntrs/packages/server/src/api/routes/mod.rs", "Rust", 0, 9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 12
+"/home/endeavour/@projects/tauntrs/packages/server/src/api/routes/pets.rs", "Rust", 0, 114, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 13, 127
+"/home/endeavour/@projects/tauntrs/packages/server/src/configuration/cli_arguments.rs", "Rust", 0, 106, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 9, 116
+"/home/endeavour/@projects/tauntrs/packages/server/src/configuration/config_file.rs", "Rust", 0, 81, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7, 88
+"/home/endeavour/@projects/tauntrs/packages/server/src/configuration/env_variables.rs", "Rust", 0, 36, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 41
+"/home/endeavour/@projects/tauntrs/packages/server/src/configuration/mod.rs", "Rust", 0, 549, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 109, 38, 696
+"/home/endeavour/@projects/tauntrs/packages/server/src/core/cors.rs", "Rust", 0, 94, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 19, 113
+"/home/endeavour/@projects/tauntrs/packages/server/src/core/mod.rs", "Rust", 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 3
+"/home/endeavour/@projects/tauntrs/packages/server/src/core/recaptcha.rs", "Rust", 0, 98, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 11, 109
+"/home/endeavour/@projects/tauntrs/packages/server/src/database/applications.rs", "Rust", 0, 114, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 14, 128
+"/home/endeavour/@projects/tauntrs/packages/server/src/database/mod.rs", "Rust", 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 5
+"/home/endeavour/@projects/tauntrs/packages/server/src/database/pets.rs", "Rust", 0, 178, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 18, 196
+"/home/endeavour/@projects/tauntrs/packages/server/src/database/token.rs", "Rust", 0, 114, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 19, 133
+"/home/endeavour/@projects/tauntrs/packages/server/src/database/users.rs", "Rust", 0, 295, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 40, 335
+"/home/endeavour/@projects/tauntrs/packages/server/src/main.rs", "Rust", 0, 50, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 11, 61
+"Total", "-", 12, 2491, 4141, 385, 326, 1913, 2308, 1, 1, 168, 14, 49, 130, 1589, 13528

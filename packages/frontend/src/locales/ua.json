@@ -107,5 +107,15 @@
     "create_pet.defaultDescription": "Введіть опис тварини, щоб побачити попередній перегляд.",
     "create_pet.success": "Тварину успішно створено!",
     "create_pet.successSub": "{{name}} було додано до бази даних.",
-    "PET_NOT_FOUND": "Тварину не знайдено"
+    "PET_NOT_FOUND": "Тварину не знайдено",
+    "pets.title": "Наші тварини",
+    "pets.searchPlaceholder": "Пошук за ім'ям...",
+    "pets.filterAll": "Всі",
+    "pets.filterAvailable": "Доступні",
+    "pets.filterPending": "Очікують",
+    "pets.filterAdopted": "Всиновлені",
+    "pets.noPets": "Не знайдено тварин, що відповідають критеріям.",
+    "pets.status.available": "Доступні",
+    "pets.status.pending": "Очікують",
+    "pets.status.adopted": "Всиновлені"
 }

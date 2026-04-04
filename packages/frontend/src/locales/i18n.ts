@@ -12,7 +12,7 @@ import en from "./en.json";
 import ua from "./ua.json";
 
 const enDictionary = i18n.flatten(en);
-const uaDictionary = i18n.flatten(ua as typeof en);
+const uaDictionary = i18n.flatten(ua);
 
 const dictionaries = {
     en: enDictionary,
