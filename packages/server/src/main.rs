@@ -9,7 +9,8 @@ use sqlx::{SqlitePool, sqlite::SqliteConnectOptions};
 use crate::{
     core::cors::Cors,
     database::{
-        applications::ApplicationsTable, pets::PetsTable, token::TokensTable, users::UsersTable,
+        applications::ApplicationsTable, donations::DonationsTable, pets::PetsTable,
+        token::TokensTable, users::UsersTable,
     },
 };
 
@@ -39,6 +40,7 @@ async fn main() -> io::Result<()> {
     let tokens_table = web::Data::new(TokensTable::new(pool.clone()));
     let pets_table = web::Data::new(PetsTable::new(pool.clone()));
     let applications_table = web::Data::new(ApplicationsTable::new(pool.clone()));
+    let donations_table = web::Data::new(DonationsTable::new(pool.clone()));
 
     let host_and_port = (config.host.value.clone(), config.port.value);
     let stripe_client = web::Data::new(stripe::Client::new(config.stripe_api_key.value.clone()));
@@ -50,6 +52,7 @@ async fn main() -> io::Result<()> {
             .app_data(tokens_table.clone())
             .app_data(pets_table.clone())
             .app_data(applications_table.clone())
+            .app_data(donations_table.clone())
             .app_data(stripe_client.clone())
             .service(api::routes(config.clone()))
             .wrap(Cors)
