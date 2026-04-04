@@ -133,6 +133,8 @@
     "donations.title": "Community Donations",
     "donations.subtitle": "Every contribution helps us rescue, treat, and rehome more animals.",
     "donations.empty": "No donations have been recorded yet.",
+    "donations.anonymousDonor": "Anonymous donor",
+    "donations.emptyMessage": "No message left.",
     "donations.success.title": "Thank you for supporting our animals!",
     "donations.success.body": "Your donation has been received and already started doing good.",
     "donationSuccess.processingTitle": "Finalizing Your Donation",

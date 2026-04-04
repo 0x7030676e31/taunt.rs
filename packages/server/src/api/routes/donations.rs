@@ -30,10 +30,7 @@ async fn create_donation(
             .into();
     }
 
-    let donor_name = donor_name
-        .map(|value| value.trim().to_string())
-        .filter(|value| !value.is_empty())
-        .unwrap_or_else(|| "Anonymous donor".to_string());
+    let donor_name = donor_name.unwrap_or_default().trim().to_string();
 
     if donor_name.len() > 255 {
         return ErrorResponseBuilder::bad_request()
@@ -43,11 +40,9 @@ async fn create_donation(
             .into();
     }
 
-    let message = message
-        .map(|value| value.trim().to_string())
-        .filter(|value| !value.is_empty());
+    let message = message.unwrap_or_default().trim().to_string();
 
-    if message.as_deref().is_some_and(|value| value.len() > 512) {
+    if message.len() > 512 {
         return ErrorResponseBuilder::bad_request()
             .set_status("DONATION_INVALID_MESSAGE")
             .set_message("Donation message must be at most 512 characters long.")
@@ -56,7 +51,7 @@ async fn create_donation(
     }
 
     match donations_table
-        .create_donation(donor_name, amount, message.as_deref())
+        .create_donation(donor_name, amount, Some(message.as_str()))
         .await
     {
         Ok(donation) => HttpResponse::Ok().json(donation),

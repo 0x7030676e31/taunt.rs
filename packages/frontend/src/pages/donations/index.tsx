@@ -31,6 +31,18 @@ export default function Donations() {
         }).format(new Date(timestamp));
     };
 
+    const displayDonorName = (value: string) => {
+        return value.trim().length > 0 ? value : t("donations.anonymousDonor");
+    };
+
+    const displayMessage = (value: string | null) => {
+        if (!value || value.trim().length === 0) {
+            return t("donations.emptyMessage");
+        }
+
+        return value;
+    };
+
     onMount(async () => {
         const request = await req<Api.GetDonationsResponse, Api.GetDonationsError>(`${window.API_URL}/donations`, {
             method: "GET",
@@ -113,15 +125,12 @@ export default function Donations() {
                                 {(donation) => (
                                     <article class={styles.donationCard}>
                                         <div class={styles.cardHeader}>
-                                            <h2>{donation.donorName}</h2>
+                                            <h2>{displayDonorName(donation.donorName)}</h2>
                                             <span class={styles.amount}>{formatAmount(donation.amount)}</span>
                                         </div>
 
                                         <p class={styles.date}>{formatDate(donation.createdAt)}</p>
-
-                                        <Show when={donation.message && donation.message.trim().length > 0}>
-                                            <p class={styles.message}>{donation.message}</p>
-                                        </Show>
+                                        <p class={styles.message}>{displayMessage(donation.message)}</p>
                                     </article>
                                 )}
                             </For>

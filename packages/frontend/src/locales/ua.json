@@ -133,6 +133,8 @@
     "donations.title": "Пожертви Спільноти",
     "donations.subtitle": "Кожен внесок допомагає нам рятувати, лікувати та прилаштовувати більше тварин.",
     "donations.empty": "Поки що немає зафіксованих пожертв.",
+    "donations.anonymousDonor": "Анонімний донатор",
+    "donations.emptyMessage": "Без повідомлення.",
     "donations.success.title": "Дякуємо за підтримку наших тварин!",
     "donations.success.body": "Вашу пожертву отримано, і вона вже працює на добру справу.",
     "donationSuccess.processingTitle": "Завершуємо Вашу Пожертву",
