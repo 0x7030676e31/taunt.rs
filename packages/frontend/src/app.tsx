@@ -2,13 +2,13 @@ import { Route, Router } from "@solidjs/router";
 import { type JSX } from "solid-js";
 
 import Home from "./pages/home";
-import Donate from "./pages/donate";
 import Adopt from "./pages/adopt";
-import Login from "./pages/login";
+import AdoptPet from "./pages/adopt_pet";
 import Dashboard from "./pages/dashboard";
 import Donations from "./pages/donations";
 import Pet from "./pages/pet";
 import Pets from "./pages/pets";
+import CreatePet from "./pages/create_pet";
 import Application from "./pages/application";
 import Applications from "./pages/applications";
 
@@ -50,17 +50,15 @@ export default function App() {
             <Router root={Root}>
                 <Route component={AppLayout}>
                     <Route path="/" component={Home} />
-                    <Route path="/donate" component={Donate} />
                     <Route path="/adopt" component={Adopt} />
-                    <Route path="/adopt/:id" component={Adopt} />
-                    <Route path="/login" component={Login} />
+                    <Route path="/adopt/:id" component={AdoptPet} />
                     <Route path="/donations" component={Donations} />
                 </Route>
                 <Route path="/dashboard" component={DashboardLayout}>
                     <Route path="/" component={Dashboard} />
                     <Route path="/pets" component={Pets} />
                     <Route path="/pets/:id" component={Pet} />
-                    <Route path="/pets/add" component={Pet} />
+                    <Route path="/pets/add" component={CreatePet} />
                     <Route path="/applications" component={Applications} />
                     <Route path="/applications/:id" component={Application} />
                 </Route>
