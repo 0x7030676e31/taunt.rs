@@ -1,4 +1,4 @@
-import { useAccountContext } from "@/providers/account";
+import { useAccountContext } from "@/account";
 import { A } from "@solidjs/router"
 import { useI18n } from "@/locales/i18n";
 import { Show, batch, createSignal, onMount } from "solid-js";
@@ -44,7 +44,7 @@ export default function Navbar(props: AccountProviderProps) {
                         <div class={styles.separator} />
                         <NavbarItem label={t("navbar.home")} href="/" />
                         <NavbarItem label={t("navbar.adopt")} href="/adopt" />
-                        <NavbarItem label={t("navbar.donate")} href="/donate" />
+                        <NavbarItem label={t("navbar.donate")} href="/donations" />
                         <div class={styles.separator} />
                         <Show when={currentUser() === null} fallback={<Account />}>
                             <button onClick={openForm} class={styles.loginButton}>

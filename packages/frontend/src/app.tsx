@@ -11,34 +11,35 @@ import Pet from "./pages/pet";
 import Pets from "./pages/pets";
 import Application from "./pages/application";
 import Applications from "./pages/applications";
-import Volunteer from "./pages/volunteer";
-import Volunteers from "./pages/volunteers";
 
 import Navbar from "./common/navbar";
 import Layout from "./common/layout";
 
-import { AccountContextProvider } from "./providers/account";
-import { SocketProviderContext } from "./providers/socket";
+import { AccountContextProvider } from "./account";
 import { I18nProvider } from "./locales/i18n";
 import Notifications from "./notifications";
 
 const AppLayout = (props: { children?: JSX.Element }) => {
     return (
-        <AccountContextProvider>
-            <Navbar>
-                {props.children}
-            </Navbar>
-        </AccountContextProvider>
+        <Navbar>
+            {props.children}
+        </Navbar>
     )
 }
 
 const DashboardLayout = (props: { children?: JSX.Element }) => {
     return (
-        <SocketProviderContext>
-            <Layout>
-                {props.children}
-            </Layout>
-        </SocketProviderContext>
+        <Layout>
+            {props.children}
+        </Layout>
+    )
+}
+
+const Root = (props: { children?: JSX.Element }) => {
+    return (
+        <AccountContextProvider>
+            {props.children}
+        </AccountContextProvider>
     )
 }
 
@@ -46,22 +47,22 @@ export default function App() {
     return (
         <I18nProvider>
             <Notifications />
-            <Router>
+            <Router root={Root}>
                 <Route component={AppLayout}>
                     <Route path="/" component={Home} />
                     <Route path="/donate" component={Donate} />
                     <Route path="/adopt" component={Adopt} />
+                    <Route path="/adopt/:id" component={Adopt} />
                     <Route path="/login" component={Login} />
+                    <Route path="/donations" component={Donations} />
                 </Route>
                 <Route path="/dashboard" component={DashboardLayout}>
                     <Route path="/" component={Dashboard} />
-                    <Route path="/donations" component={Donations} />
                     <Route path="/pets" component={Pets} />
                     <Route path="/pets/:id" component={Pet} />
+                    <Route path="/pets/add" component={Pet} />
                     <Route path="/applications" component={Applications} />
                     <Route path="/applications/:id" component={Application} />
-                    <Route path="/volunteers" component={Volunteers} />
-                    <Route path="/volunteers/:id" component={Volunteer} />
                 </Route>
             </Router>
         </I18nProvider>

@@ -1,3 +1,4 @@
+@use "sass:color";
 @use "palette" as *;
 @import url("https://fonts.googleapis.com/css2?family=Climate+Crisis:YEAR@1979&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Roboto+Mono:ital,wght@0,100..700;1,100..700&display=swap");
 
@@ -6,7 +7,8 @@
     height: 100%;
     display: flex;
     flex-direction: column;
-    overflow: hidden;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
 .catContainer {
@@ -14,6 +16,7 @@
     width: 100%;
     aspect-ratio: 2.5 / 1;
     min-height: 300px;
+    flex-shrink: 0;
     overflow: hidden;
 
     .catImage {
@@ -106,4 +109,291 @@
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
     letter-spacing: clamp(0.12em, 0.25vw, 0.3em);
     font-family: "Climate Crisis", sans-serif;
+}
+
+.contentSection {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: clamp(2rem, 5vw, 4rem) clamp(1rem, 5vw, 5rem);
+    background-color: $background1;
+    gap: clamp(3rem, 6vw, 5rem);
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.sectionTitle {
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    color: $accent;
+    font-family: "Bebas Neue", "Climate Crisis", sans-serif;
+    margin: 0 0 1rem 0;
+    text-align: center;
+    text-transform: uppercase;
+}
+
+.aboutBlock {
+    max-width: 800px;
+    text-align: center;
+
+    .aboutText {
+        font-size: clamp(1rem, 2vw, 1.25rem);
+        line-height: 1.6;
+        color: $text;
+        margin: 0;
+        font-family: "Lato", sans-serif;
+    }
+}
+
+.teamBlock {
+    width: 100%;
+    max-width: 1200px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.teamGrid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: clamp(1rem, 3vw, 2rem);
+    width: 100%;
+    margin-top: 2rem;
+}
+
+.teamCard {
+    position: relative;
+    flex: 0 1 calc(50% - 1rem);
+    max-width: 250px;
+    aspect-ratio: 3 / 4;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 15px 45px 5px rgba(0, 0, 0, 0.3);
+    transition:
+        transform 0.3s ease,
+        box-shadow 0.3s ease;
+
+    @media (min-width: 600px) {
+        flex: 0 1 calc(33.333% - 1.5rem);
+    }
+
+    @media (min-width: 1024px) {
+        flex: 0 1 calc(20% - 1.6rem);
+    }
+
+    &:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 55px 8px rgba(0, 0, 0, 0.4);
+    }
+}
+
+.teamImage {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.memberName {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: clamp(1rem, 2vw, 1.5rem) 0.5rem 0.5rem 0.5rem;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+    color: #ffffff;
+    font-family: "Bebas Neue", "Climate Crisis", sans-serif;
+    font-size: clamp(1rem, 2vw, 1.15rem);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    box-sizing: border-box;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    margin: 0;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.donateSection {
+    background-color: $rosewater;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: clamp(2rem, 5vw, 4rem) clamp(1rem, 5vw, 5rem);
+    box-sizing: border-box;
+}
+
+.donateContainer {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: clamp(2rem, 5vw, 4rem);
+    width: 100%;
+    max-width: 1000px;
+    margin-top: 2rem;
+
+    @media (min-width: 768px) {
+        grid-template-columns: 1fr 1fr;
+        align-items: center;
+    }
+}
+
+.donateImages {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 400px;
+    width: 100%;
+}
+
+.donateImg1,
+.donateImg2 {
+    position: absolute;
+    aspect-ratio: 2 / 3;
+    object-fit: cover;
+    border-radius: 12px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+    transition: transform 0.3s ease;
+}
+
+.donateImg1 {
+    width: 55%;
+    transform: rotate(-6deg) translateX(-20%);
+    z-index: 2;
+
+    &:hover {
+        transform: rotate(-2deg) translateX(-20%) scale(1.05);
+        z-index: 3;
+    }
+}
+
+.donateImg2 {
+    width: 50%;
+    transform: rotate(8deg) translateX(30%) translateY(30px);
+    z-index: 1;
+
+    &:hover {
+        transform: rotate(4deg) translateX(30%) translateY(30px) scale(1.05);
+        z-index: 3;
+    }
+}
+
+.donateForm {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    background-color: #ffffff;
+    padding: clamp(1.5rem, 3vw, 2.5rem);
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+
+    .formGroup {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .donateLabel {
+        font-family: "Lato", sans-serif;
+        font-weight: 700;
+        color: $text;
+        font-size: 1rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .presetAmounts {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+
+        button {
+            flex: 1;
+            padding: 0.75rem;
+            border: 2px solid $primary;
+            background: transparent;
+            color: $text;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+
+            &.selected {
+                background: $primary;
+                color: #ffffff;
+            }
+
+            &:hover:not(.selected) {
+                background: rgba(183, 192, 122, 0.1);
+            }
+        }
+    }
+
+    .donateInput {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        background-color: transparent !important;
+        border: 2px solid #e0e0e0 !important;
+        border-radius: 8px;
+        font-family: "Lato", sans-serif;
+        font-size: 1rem;
+        color: $text !important;
+        box-sizing: border-box;
+        transition: border-color 0.2s;
+
+        &::-webkit-outer-spin-button,
+        &::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        -moz-appearance: textfield;
+        appearance: textfield;
+
+        &:focus {
+            outline: none;
+            border-color: $accent !important;
+            box-shadow: none !important;
+        }
+    }
+
+    textarea.donateInput {
+        resize: vertical;
+        min-height: 80px;
+    }
+
+    .charCounter {
+        text-align: right;
+        font-family: "Lato", sans-serif;
+        font-size: 0.85rem;
+        color: $background0;
+        margin-top: -0.25rem;
+    }
+
+    .submitDonateBtn {
+        background-color: $accent;
+        color: #ffffff;
+        border: none;
+        padding: 1rem;
+        border-radius: 8px;
+        font-family: "Lato", sans-serif;
+        font-weight: 900;
+        font-size: 1.25rem;
+        cursor: pointer;
+        text-transform: uppercase;
+        transition:
+            background-color 0.2s,
+            transform 0.1s;
+        margin-top: 1rem;
+
+        &:hover {
+            background-color: color.adjust($accent, $lightness: -10%);
+        }
+
+        &:active {
+            transform: scale(0.98);
+        }
+    }
 }

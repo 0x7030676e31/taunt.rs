@@ -7,7 +7,6 @@ pub mod error_response;
 pub mod file_stream;
 pub mod public;
 pub mod routes;
-pub mod sessions;
 
 #[derive(serde::Deserialize, Debug)]
 struct CreateStripeCheckoutSessionData {
