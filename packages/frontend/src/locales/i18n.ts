@@ -31,7 +31,7 @@ type I18nContextValue = readonly [Translator, Accessor<Locale>, Setter<Locale>];
 const I18nContext = createContext<I18nContextValue | undefined>(undefined);
 
 export const I18nProvider: ParentComponent<{ locale?: Locale }> = props => {
-    const [locale, setLocale] = createSignal<Locale>(props.locale ?? "en");
+    const [locale, setLocale] = createSignal<Locale>(props.locale ?? (import.meta.env.DEV ? "en" : "ua"));
     const translate = createTranslator(locale);
 
     return I18nContext.Provider({

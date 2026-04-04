@@ -59,7 +59,7 @@
     "auth.recaptcha.text2": " та ",
     "auth.recaptcha.terms": "Умови використання",
     "auth.recaptcha.text3": ".",
-    "home.catCaption": "ТВАРИНИ ДНІПРА",
+    "home.catCaption": "DNIPRO ANIMALS",
     "home.support": "ПІДТРИМАТИ НАС",
     "home.about": "Про нас",
     "home.about.text": "Ми активно рятуємо безпритульних собак і котів, лікуємо їх, вакцинуємо та знаходимо їм нові домівки. Кожного дня наша віддана команда волонтерів невтомно працює, щоб жодна тварина не залишилася без уваги. Тому ми створили цю платформу — щоб ще швидше поєднувати наших пухнастих друзів із люблячими сім'ями.",
@@ -129,14 +129,5 @@
     "pets.noPets": "Не знайдено тварин, що відповідають критеріям.",
     "pets.status.available": "Доступні",
     "pets.status.pending": "Очікують",
-    "pets.status.adopted": "Всиновлені",
-    "donations.title": "Пожертви Спільноти",
-    "donations.subtitle": "Кожен внесок допомагає нам рятувати, лікувати та прилаштовувати більше тварин.",
-    "donations.empty": "Поки що немає зафіксованих пожертв.",
-    "donations.success.title": "Дякуємо за підтримку наших тварин!",
-    "donations.success.body": "Вашу пожертву отримано, і вона вже працює на добру справу.",
-    "donationSuccess.processingTitle": "Завершуємо Вашу Пожертву",
-    "donationSuccess.processingBody": "Зачекайте, будь ласка, ми безпечно зберігаємо дані вашої пожертви.",
-    "donationSuccess.failedTitle": "Не вдалося завершити",
-    "donationSuccess.fallbackCta": "Повернутися до пожертв"
+    "pets.status.adopted": "Всиновлені"
 }
