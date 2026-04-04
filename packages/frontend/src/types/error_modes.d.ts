@@ -42,6 +42,15 @@ export type CreatePetErrorModes =
 export type GetPetByIdErrorModes =
     | "PET_NOT_FOUND"
     | "DATABASE_ERROR";
+export type CreateDonationErrorModes =
+    | "DONATION_INVALID_AMOUNT"
+    | "DONATION_INVALID_DONOR_NAME"
+    | "DONATION_INVALID_MESSAGE"
+    | "DATABASE_ERROR";
+export type CreateStripeCheckoutSessionErrorModes =
+    | "DONATION_INVALID_AMOUNT"
+    | "STRIPE_FAILED_TO_CREATE_CHECKOUT_SESSION"
+    | "STRIPE_CHECKOUT_SESSION_URL_MISSING";
 
 export type ErrorModes =
     | NetworkErrorMode
@@ -51,4 +60,6 @@ export type ErrorModes =
     | RegisterErrorModes
     | MeErrorModes
     | CreatePetErrorModes
-    | GetPetByIdErrorModes;
+    | GetPetByIdErrorModes
+    | CreateDonationErrorModes
+    | CreateStripeCheckoutSessionErrorModes;

@@ -6,6 +6,7 @@ import Adopt from "./pages/adopt";
 import AdoptPet from "./pages/adopt_pet";
 import Dashboard from "./pages/dashboard";
 import Donations from "./pages/donations";
+import DonationSuccess from "./pages/donation_success";
 import Pet from "./pages/pet";
 import Pets from "./pages/pets";
 import CreatePet from "./pages/create_pet";
@@ -53,6 +54,7 @@ export default function App() {
                     <Route path="/adopt" component={Adopt} />
                     <Route path="/adopt/:id" component={AdoptPet} />
                     <Route path="/donations" component={Donations} />
+                    <Route path="/donation-success" component={DonationSuccess} />
                 </Route>
                 <Route path="/dashboard" component={DashboardLayout}>
                     <Route path="/" component={Dashboard} />

@@ -1,5 +1,6 @@
 import { createSignal, Show } from "solid-js";
 import { useI18n } from "@/locales/i18n";
+import req from "@/req";
 
 import TextInput from "@/common/inputs/text-input";
 import TextAreaInput from "@/common/inputs/textarea-input";
@@ -29,38 +30,88 @@ export default function Home() {
     const [name, setName] = createSignal("");
 
     const [isConfirmModalOpen, setIsConfirmModalOpen] = createSignal(false);
-    const [isSuccessModalOpen, setIsSuccessModalOpen] = createSignal(false);
     const [finalAmountToSubmit, setFinalAmountToSubmit] = createSignal(0);
+    const [isSubmitting, setIsSubmitting] = createSignal(false);
+    const [submitError, setSubmitError] = createSignal<string | null>(null);
 
-    const trySubmit = () => {
+    const createCheckoutSession = async (amount: number) => {
+        setIsSubmitting(true);
+        setSubmitError(null);
+
+        const body = {
+            donorName: name().trim() || undefined,
+            message: message().trim() || undefined,
+        };
+
+        const request = await req<
+            Api.CreateStripeCheckoutSessionResponse,
+            Api.CreateStripeCheckoutSessionError
+        >(`${window.API_URL}/create-stripe-checkout-session?amount=${amount}`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(body),
+        });
+
+        if (request.error) {
+            setSubmitError(t(request.error.status));
+            setIsSubmitting(false);
+            return;
+        }
+
+        const response = request.data.split();
+        if (response.error) {
+            const errorResponse = await response.error.json();
+
+            if (errorResponse.error) {
+                setSubmitError(errorResponse.error.message);
+                setIsSubmitting(false);
+                return;
+            }
+
+            setSubmitError(t(errorResponse.data.status));
+            setIsSubmitting(false);
+            return;
+        }
+
+        const json = await response.data.json();
+        if (json.error) {
+            setSubmitError(json.error.message);
+            setIsSubmitting(false);
+            return;
+        }
+
+        window.location.href = json.data.url;
+    };
+
+    const trySubmit = async () => {
         const finalAmount = selectedAmount() === "custom"
             ? Number(customAmount())
             : (selectedAmount() as number);
 
-        if (!finalAmount || isNaN(finalAmount)) return;
+        if (!finalAmount || isNaN(finalAmount) || finalAmount <= 0) {
+            setSubmitError(t("DONATION_INVALID_AMOUNT"));
+            return;
+        }
 
         setFinalAmountToSubmit(finalAmount);
 
         if (!message().trim() || !name().trim()) {
             setIsConfirmModalOpen(true);
         } else {
-            finalizeDonation();
+            await finalizeDonation();
         }
     };
 
     const handleDonate = (e: Event) => {
         e.preventDefault();
-        trySubmit();
+        void trySubmit();
     };
 
-    const finalizeDonation = () => {
+    const finalizeDonation = async () => {
         setIsConfirmModalOpen(false);
-        setIsSuccessModalOpen(true);
-        // Reset form
-        setSelectedAmount(AMOUNTS[1]);
-        setCustomAmount("");
-        setMessage("");
-        setName("");
+        await createCheckoutSession(finalAmountToSubmit());
     };
 
     return (
@@ -205,9 +256,13 @@ export default function Home() {
                             </div>
                         </div>
 
-                        <button type="submit" class={styles.submitDonateBtn}>
-                            {t("home.donate.submit")}
+                        <button type="submit" class={styles.submitDonateBtn} disabled={isSubmitting()}>
+                            {isSubmitting() ? t("home.donate.processing") : t("home.donate.submit")}
                         </button>
+
+                        <Show when={submitError()}>
+                            <p class={styles.submitError}>{submitError()}</p>
+                        </Show>
                     </form>
                 </div>
             </div>
@@ -248,23 +303,8 @@ export default function Home() {
                     <button class={styles.modalBtnSecondary} onClick={() => setIsConfirmModalOpen(false)}>
                         {t("auth.close")}
                     </button>
-                    <button class={styles.modalBtnPrimary} onClick={finalizeDonation}>
-                        {t("home.donate.submit")}
-                    </button>
-                </div>
-            </Modal>
-
-            <Modal
-                isOpen={isSuccessModalOpen()}
-                onClose={() => setIsSuccessModalOpen(false)}
-                title={t("home.donate.success")}
-            >
-                <p class={styles.successAmount}>
-                    ₴{finalAmountToSubmit()}
-                </p>
-                <div class={styles.modalActions}>
-                    <button class={styles.modalBtnPrimary} onClick={() => setIsSuccessModalOpen(false)}>
-                        {t("auth.close")}
+                    <button class={styles.modalBtnPrimary} disabled={isSubmitting()} onClick={() => void finalizeDonation()}>
+                        {isSubmitting() ? t("home.donate.processing") : t("home.donate.submit")}
                     </button>
                 </div>
             </Modal>

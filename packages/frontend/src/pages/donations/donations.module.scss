@@ -1,0 +1,182 @@
+@use "sass:color";
+@use "../../palette" as *;
+
+.pageContainer {
+    width: 100%;
+    min-height: 100%;
+    display: flex;
+    justify-content: center;
+    padding: clamp(1.25rem, 3vw, 2.5rem);
+    background:
+        radial-gradient(circle at 0% 0%, rgba(239, 159, 118, 0.18) 0%, rgba(239, 159, 118, 0) 42%),
+        radial-gradient(circle at 100% 100%, rgba(183, 192, 122, 0.26) 0%, rgba(183, 192, 122, 0) 38%), $background1;
+    box-sizing: border-box;
+}
+
+.contentWrapper {
+    width: 100%;
+    max-width: 1080px;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.headerBlock {
+    display: grid;
+    gap: 0.5rem;
+
+    h1 {
+        margin: 0;
+        color: $secondary;
+        font-family: "Climate Crisis", sans-serif;
+        font-size: clamp(2rem, 4.2vw, 3.15rem);
+        text-transform: uppercase;
+        line-height: 1;
+    }
+
+    p {
+        margin: 0;
+        color: color.adjust($text, $lightness: 10%);
+        font-family: "Lato", sans-serif;
+        font-size: clamp(1rem, 1.5vw, 1.12rem);
+        max-width: 60ch;
+    }
+}
+
+.successNotice {
+    border: 1.5px solid rgba(166, 209, 137, 0.8);
+    background: linear-gradient(115deg, rgba(166, 209, 137, 0.18), rgba(129, 200, 190, 0.14));
+    border-radius: 14px;
+    padding: 1rem 1.1rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+    display: grid;
+    gap: 0.3rem;
+
+    h3,
+    p {
+        margin: 0;
+        font-family: "Lato", sans-serif;
+    }
+
+    h3 {
+        color: color.adjust($green, $lightness: -25%);
+        font-size: 1.08rem;
+        font-weight: 900;
+    }
+
+    p {
+        color: color.adjust($text, $lightness: 6%);
+        font-size: 0.98rem;
+        line-height: 1.4;
+        font-weight: 700;
+    }
+}
+
+.donationsGrid {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1rem;
+}
+
+.donationCard {
+    background: #ffffff;
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    border-radius: 14px;
+    padding: 1rem 1rem 1.05rem;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.06);
+    display: grid;
+    gap: 0.7rem;
+    align-content: start;
+    transition:
+        transform 0.2s $cubic,
+        box-shadow 0.2s $cubic;
+
+    &:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 18px 34px rgba(0, 0, 0, 0.09);
+    }
+}
+
+.cardHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 0.8rem;
+
+    h2 {
+        margin: 0;
+        color: $text;
+        font-family: "Bebas Neue", "Climate Crisis", sans-serif;
+        font-size: 1.45rem;
+        letter-spacing: 0.02em;
+        line-height: 1;
+        overflow-wrap: anywhere;
+        word-break: break-word;
+    }
+}
+
+.amount {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    background: rgba(242, 156, 75, 0.18);
+    color: color.adjust($accent, $lightness: -22%);
+    border: 1px solid rgba(242, 156, 75, 0.35);
+    font-family: "Roboto Mono", monospace;
+    font-size: 0.88rem;
+    font-weight: 900;
+    padding: 0.25rem 0.7rem;
+    white-space: nowrap;
+}
+
+.date {
+    margin: 0;
+    color: color.adjust($background0, $lightness: -10%);
+    font-family: "Roboto Mono", monospace;
+    font-size: 0.8rem;
+    font-weight: 700;
+}
+
+.message {
+    margin: 0;
+    color: color.adjust($text, $lightness: 6%);
+    line-height: 1.45;
+    font-family: "Lato", sans-serif;
+    font-size: 0.95rem;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}
+
+.loadingSpinner {
+    display: flex;
+    justify-content: center;
+    padding: 3.5rem 0;
+    width: 100%;
+    color: $secondary;
+    font-size: 1.3rem;
+}
+
+.errorBanner {
+    background-color: rgba(231, 130, 132, 0.16);
+    border: 1px solid $red;
+    color: color.adjust($red, $lightness: -10%);
+    padding: 1rem;
+    border-radius: 10px;
+    font-weight: 700;
+    font-family: "Lato", sans-serif;
+}
+
+.emptyState {
+    width: 100%;
+    background: #ffffff;
+    border: 1px dashed rgba(0, 0, 0, 0.16);
+    border-radius: 12px;
+    padding: 2.8rem 1rem;
+    text-align: center;
+    color: rgba(0, 0, 0, 0.6);
+    font-weight: 700;
+    font-family: "Lato", sans-serif;
+    font-size: 1.02rem;
+}

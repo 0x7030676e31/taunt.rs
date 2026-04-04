@@ -65,6 +65,32 @@ declare global {
         // GET /pets/:id
         export type GetPetByIdError = ResponseError<modes.GetPetByIdErrorModes>;
         export type GetPetByIdResponse = Objects.Pet;
+
+        // GET /donations
+        export type GetDonationsError = ResponseError<"DATABASE_ERROR">;
+        export type GetDonationsResponse = Objects.Donation[];
+
+        // POST /donations
+        export type CreateDonationError = ResponseError<modes.CreateDonationErrorModes>;
+        export type CreateDonationBody = {
+            donorName?: string;
+            amount: number;
+            message?: string;
+        };
+        export type CreateDonationResponse = Objects.Donation;
+
+        // POST /create-stripe-checkout-session?amount=:amount
+        export type CreateStripeCheckoutSessionError = ResponseError<modes.CreateStripeCheckoutSessionErrorModes>;
+        export type CreateStripeCheckoutSessionBody = {
+            donorName?: string;
+            message?: string;
+        };
+        export type CreateStripeCheckoutSessionResponse = {
+            url: string;
+        };
+
+        // GET /applications
+        // No routes are currently implemented in the backend for this scope.
     }
 
     namespace Objects {
@@ -86,6 +112,14 @@ declare global {
             imageUrl: string;
             createdAt: number;
             updatedAt: number;
+        }
+
+        interface Donation {
+            donationId: number;
+            donorName: string;
+            amount: number;
+            message: string | null;
+            createdAt: number;
         }
     }
 }

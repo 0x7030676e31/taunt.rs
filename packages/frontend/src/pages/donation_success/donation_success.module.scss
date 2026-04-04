@@ -1,0 +1,75 @@
+@use "sass:color";
+@use "../../palette" as *;
+
+.pageContainer {
+    width: 100%;
+    min-height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: clamp(1.25rem, 3.5vw, 2.5rem);
+    background:
+        radial-gradient(circle at 20% 10%, rgba(242, 156, 75, 0.22) 0%, rgba(242, 156, 75, 0) 45%),
+        radial-gradient(circle at 85% 90%, rgba(166, 209, 137, 0.24) 0%, rgba(166, 209, 137, 0) 40%), $background1;
+    box-sizing: border-box;
+}
+
+.card {
+    width: min(560px, 100%);
+    background: #ffffff;
+    border-radius: 16px;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.1);
+    padding: clamp(1.3rem, 4vw, 2rem);
+    display: grid;
+    gap: 0.8rem;
+
+    h1 {
+        margin: 0;
+        color: $secondary;
+        font-family: "Climate Crisis", sans-serif;
+        font-size: clamp(1.6rem, 4vw, 2.5rem);
+        line-height: 1.05;
+        text-transform: uppercase;
+    }
+
+    p {
+        margin: 0;
+        color: color.adjust($text, $lightness: 8%);
+        font-family: "Lato", sans-serif;
+        font-size: clamp(0.98rem, 2vw, 1.1rem);
+        line-height: 1.5;
+    }
+}
+
+.spinnerWrap {
+    font-size: 2rem;
+    color: $accent;
+    display: inline-flex;
+}
+
+.ctaButton {
+    margin-top: 0.4rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: fit-content;
+    text-decoration: none;
+    font-family: "Roboto Mono", monospace;
+    font-weight: 800;
+    font-size: 0.86rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: #ffffff;
+    background: linear-gradient(120deg, $accent, color.adjust($secondary, $lightness: -10%));
+    border-radius: 999px;
+    padding: 0.72rem 1.1rem;
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+
+    &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 24px rgba(0, 0, 0, 0.15);
+    }
+}
