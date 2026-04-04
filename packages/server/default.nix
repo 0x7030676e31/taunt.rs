@@ -17,7 +17,7 @@ let
   commonArgs = {
     src = crane.cleanCargoSource ./.;
     strictDeps = true;
-    nativeBuildInputs = [ pkg-config openssl ];
+    nativeBuildInputs = [ pkg-config openssl openssl.dev ];
     PKG_CONFIG_PATH = "${pkgs.openssl.dev}/lib/pkgconfig";
   };
 
@@ -25,7 +25,7 @@ let
 in
   crane.buildPackage (commonArgs // {
     cargoArtifacts = artifacts;
-    nativeBuildInputs = [ sqlite sqlx-cli ];
+    nativeBuildInputs = commonArgs.nativeBuildInputs ++ [ sqlite sqlx-cli ];
     preBuild = ''
       mkdir $out
       export DATABASE_URL=sqlite:$out/db.sqlite3
