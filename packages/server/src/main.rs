@@ -2,9 +2,9 @@
 
 use std::io;
 
-use actix_web::{App, HttpServer, web};
+use actix_web::{web, App, HttpServer};
 use log::info;
-use sqlx::{SqlitePool, sqlite::SqliteConnectOptions};
+use sqlx::{sqlite::SqliteConnectOptions, SqlitePool};
 
 use crate::{
     core::cors::Cors,
@@ -32,17 +32,17 @@ async fn main() -> io::Result<()> {
     let pool = SqlitePool::connect_with(opt)
         .await
         .expect("Failed to connect to the database");
-
     let users_table = web::Data::new(UsersTable::new(pool.clone()));
     let tokens_table = web::Data::new(TokensTable::new(pool.clone()));
-
     let host_and_port = (config.host.value.clone(), config.port.value);
+    let stripe_client = web::Data::new(stripe::Client::new(config.stripe_api_key.value.clone()));
 
     HttpServer::new(move || {
         App::new()
             .app_data(config.clone())
             .app_data(users_table.clone())
             .app_data(tokens_table.clone())
+            .app_data(stripe_client.clone())
             .service(api::routes(config.clone()))
             .wrap(Cors)
     })
