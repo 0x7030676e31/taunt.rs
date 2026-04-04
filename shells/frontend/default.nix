@@ -1,5 +1,5 @@
 {
-  typescript, tsgo,
+  typescript, typescript-go,
   bun,
   mkShell,
   system,
@@ -12,6 +12,6 @@ mkShell {
     inputs.bun2nix.packages.${system}.default
     bun
     typescript
-    tsgo
+    typescript-go
   ];
 }
