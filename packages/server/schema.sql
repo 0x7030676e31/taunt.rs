@@ -6,6 +6,7 @@ CREATE TABLE IF NOT EXISTS pets (
   age_months INTEGER NOT NULL,
   gender TEXT NOT NULL CHECK(gender IN ('male', 'female')),
   species TEXT NOT NULL,
+  status TEXT NOT NULL CHECK(status IN ('available', 'adopted', 'pending')),
   description TEXT NOT NULL,
   image_url TEXT,
   created_at_ms INTEGER NOT NULL,
@@ -48,7 +49,7 @@ CREATE TABLE IF NOT EXISTS donations (
   created_at_ms INTEGER NOT NULL
 );
 
-
+CREATE INDEX IF NOT EXISTS idx_pets_status ON pets(status);
 CREATE INDEX IF NOT EXISTS idx_applications_pet_id ON applications(pet_id);
 CREATE INDEX IF NOT EXISTS idx_tokens_user_id ON tokens(user_id);
 CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);

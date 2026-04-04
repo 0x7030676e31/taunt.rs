@@ -106,5 +106,6 @@
     "create_pet.defaultSpecies": "Species",
     "create_pet.defaultDescription": "Enter a description for the pet to see preview.",
     "create_pet.success": "Pet created successfully!",
-    "create_pet.successSub": "{{name}} has been added to the database."
+    "create_pet.successSub": "{{name}} has been added to the database.",
+    "PET_NOT_FOUND": "Pet not found"
 }

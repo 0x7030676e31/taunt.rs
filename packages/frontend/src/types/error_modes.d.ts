@@ -39,6 +39,9 @@ export type MeErrorModes =
 export type CreatePetErrorModes =
     | "DATABASE_ERROR"
     | GenericAuthErrorModes;
+export type GetPetByIdErrorModes =
+    | "PET_NOT_FOUND"
+    | "DATABASE_ERROR";
 
 export type ErrorModes =
     | NetworkErrorMode
@@ -47,4 +50,5 @@ export type ErrorModes =
     | LoginErrorModes
     | RegisterErrorModes
     | MeErrorModes
-    | CreatePetErrorModes;
+    | CreatePetErrorModes
+    | GetPetByIdErrorModes;
