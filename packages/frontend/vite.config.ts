@@ -3,6 +3,7 @@ import solid from "vite-plugin-solid";
 import path from "node:path";
 
 export default defineConfig({
+    base: '/public/',
     plugins: [solid()],
     resolve: {
         alias: {
