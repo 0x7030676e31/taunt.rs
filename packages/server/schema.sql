@@ -21,6 +21,7 @@ CREATE TABLE IF NOT EXISTS applications (
   message TEXT,
   status TEXT NOT NULL CHECK(status IN ('new', 'reviewed', 'approved', 'rejected')),
   created_at_ms INTEGER NOT NULL,
+  updated_at_ms INTEGER NOT NULL,
   FOREIGN KEY (pet_id) REFERENCES pets(pet_id) ON DELETE CASCADE
 );
 
@@ -47,14 +48,6 @@ CREATE TABLE IF NOT EXISTS donations (
   created_at_ms INTEGER NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS donation_sessions (
-  donation_session_id INTEGER PRIMARY KEY AUTOINCREMENT,
-  donor_name TEXT NOT NULL,
-  amount REAL NOT NULL,
-  message TEXT,
-  created_at_ms INTEGER NOT NULL,
-  expires_at_ms INTEGER NOT NULL
-);
 
 CREATE INDEX IF NOT EXISTS idx_applications_pet_id ON applications(pet_id);
 CREATE INDEX IF NOT EXISTS idx_tokens_user_id ON tokens(user_id);

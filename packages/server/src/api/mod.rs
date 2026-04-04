@@ -1,5 +1,4 @@
-use actix_web::{web, HttpResponse, Scope};
-use serde_json::json;
+use actix_web::{HttpResponse, Scope, web};
 
 use crate::{api::error_response::ErrorResponseBuilder, configuration::AppConfiguration};
 
@@ -22,7 +21,7 @@ async fn create_stripe_checkout_session(
     CheckoutSession::create(
         &stripe_client,
         CreateCheckoutSession {
-            payment_method_types: Some(vec![CreateCheckoutSessionPaymentMethodTypes::Card]), 
+            payment_method_types: Some(vec![CreateCheckoutSessionPaymentMethodTypes::Card]),
             line_items: Some(vec![CreateCheckoutSessionLineItems {
                 price_data: Some(CreateCheckoutSessionLineItemsPriceData {
                     currency: Currency::USD,

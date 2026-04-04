@@ -126,7 +126,7 @@ impl PetsTable {
         let created_at_ms = Utc::now().timestamp_millis();
         let gender_str: &str = gender.into();
         sqlx::query_as::<_, Pet>(
-            "INSERT INTO pets (name, age_months, gender, species, description, image_url, created_at_ms) VALUES (?, ?, ?, ?, ?, ?, ?)
+            "INSERT INTO pets (name, age_months, gender, species, description, image_url, created_at_ms, updated_at_ms) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
              RETURNING *",
         )        .bind(name.as_ref())
         .bind(age_months as i64)
@@ -134,6 +134,7 @@ impl PetsTable {
         .bind(species.as_ref())
         .bind(description.as_ref())
         .bind(image_url.as_ref())
+        .bind(created_at_ms)
         .bind(created_at_ms)
         .fetch_one(&self.pool)
         .await

@@ -1,5 +1,6 @@
 use actix_web::Scope;
 
+mod applications;
 mod auth;
 mod pets;
 

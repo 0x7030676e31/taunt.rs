@@ -17,7 +17,7 @@ struct CreatePetRequest {
     image_url: String,
 }
 
-#[actix_web::post("/")]
+#[actix_web::post("")]
 async fn create_pet(
     _: User,
     payload: web::Json<CreatePetRequest>,
