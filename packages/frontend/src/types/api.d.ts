@@ -53,12 +53,28 @@ declare global {
             user: Objects.User;
             tokenExpiryAtMs: number;
         };
+
+        // POST /pets
+        export type CreatePetError = ResponseError<modes.CreatePetErrorModes>;
+        export type CreatePetResponse = Objects.Pet;
     }
 
     namespace Objects {
         interface User {
             userId: number;
             email: string;
+            createdAt: number;
+            updatedAt: number;
+        }
+
+        interface Pet {
+            petId: number;
+            name: string;
+            ageMonths: number;
+            gender: "male" | "female";
+            species: string;
+            description: string;
+            imageUrl: string;
             createdAt: number;
             updatedAt: number;
         }

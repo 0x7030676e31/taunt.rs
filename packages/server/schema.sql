@@ -1,7 +1,7 @@
 PRAGMA foreign_keys = ON;
 
 CREATE TABLE IF NOT EXISTS pets (
-  animal_id INTEGER PRIMARY KEY AUTOINCREMENT,
+  pet_id INTEGER PRIMARY KEY AUTOINCREMENT,
   name TEXT NOT NULL,
   age_months INTEGER NOT NULL,
   gender TEXT NOT NULL CHECK(gender IN ('male', 'female')),
@@ -54,7 +54,7 @@ CREATE TABLE IF NOT EXISTS donation_sessions (
   message TEXT,
   created_at_ms INTEGER NOT NULL,
   expires_at_ms INTEGER NOT NULL
-)
+);
 
 CREATE INDEX IF NOT EXISTS idx_applications_pet_id ON applications(pet_id);
 CREATE INDEX IF NOT EXISTS idx_tokens_user_id ON tokens(user_id);

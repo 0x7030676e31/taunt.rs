@@ -150,13 +150,26 @@ export default function Home() {
                             <div class={styles.formGroup}>
                                 <TextInput
                                     label={t("home.donate.customAmount")}
-                                    type="number"
+                                    type="text"
+                                    inputmode="numeric"
+                                    pattern="[0-9]*"
                                     min="1"
+                                    step="1"
                                     placeholder={t("home.donate.customAmount")}
                                     value={customAmount()}
                                     class={styles.donateLabel}
                                     inputClass={styles.donateInput}
-                                    onInput={(e) => setCustomAmount(e.currentTarget.value)}
+                                    onInput={(e) => {
+                                        const cleaned = e.currentTarget.value.replace(/[^0-9]/g, "");
+                                        e.currentTarget.value = cleaned;
+                                        setCustomAmount(cleaned);
+                                    }}
+                                    onKeyDown={(e) => {
+                                        // Block invalid non-digit keys instantly while allowing control keys
+                                        if (e.key.length === 1 && !/^[0-9]$/.test(e.key) && !e.ctrlKey && !e.metaKey && !e.altKey) {
+                                            e.preventDefault();
+                                        }
+                                    }}
                                 />
                             </div>
                         </Show>
