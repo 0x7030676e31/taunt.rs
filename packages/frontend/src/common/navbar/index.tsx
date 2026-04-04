@@ -138,6 +138,14 @@ function MobileLanguageSwitcher() {
                 <span class={`${styles.flag} fi fi-ua`} />
                 Українська
             </button>
+            <button
+                type="button"
+                class={`${styles.mobileLanguageButton} ${locale() === "uaLatin" ? styles.mobileLanguageButtonActive : ""}`}
+                onClick={() => setLocale("uaLatin")}
+            >
+                <span class={`${styles.flag} fi fi-ua`} />
+                Ukrajińśka
+            </button>
         </div>
     );
 }
@@ -146,8 +154,8 @@ function LanguageDropdown() {
     const [_, locale, setLocale] = useI18n();
     const [open, setOpen] = createSignal(false);
 
-    const currentLabel = () => (locale() === "ua" ? "Українська" : "English");
-    const currentFlag = () => (locale() === "ua" ? "fi fi-ua" : "fi fi-gb");
+    const currentLabel = () => (locale() === "ua" ? "Українська" : locale() === "en" ? "English" : "Ukrajińśka");
+    const currentFlag = () => (locale() === "ua" || locale() === "uaLatin" ? "fi fi-ua" : "fi fi-gb");
 
     return (
         <div
@@ -197,6 +205,17 @@ function LanguageDropdown() {
                 >
                     <span class={`${styles.flag} fi fi-ua`} />
                     Українська
+                </button>
+                <button
+                    type="button"
+                    class={`${styles.languageOption} ${locale() === "uaLatin" ? styles.languageOptionActive : ""}`}
+                    onClick={() => {
+                        setLocale("uaLatin");
+                        setOpen(false);
+                    }}
+                >
+                    <span class={`${styles.flag} fi fi-ua`} />
+                    Ukrajińśka
                 </button>
             </div>
         </div>

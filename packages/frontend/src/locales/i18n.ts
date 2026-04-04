@@ -10,13 +10,16 @@ import {
 
 import en from "./en.json";
 import ua from "./ua.json";
+import uaLatin from "./ua-latin.json";
 
 const enDictionary = i18n.flatten(en);
 const uaDictionary = i18n.flatten(ua as typeof en);
+const uaLatinDictionary = i18n.flatten(uaLatin as typeof en);
 
 const dictionaries = {
     en: enDictionary,
     ua: uaDictionary,
+    uaLatin: uaLatinDictionary,
 };
 
 export type Locale = keyof typeof dictionaries;
