@@ -85,6 +85,42 @@ async fn create_pet(
     }
 }
 
+#[actix_web::get("")]
+async fn get_pets(pets_table: web::Data<PetsTable>) -> HttpResponse {
+    match pets_table.get_all_pets().await {
+        Ok(pets) => HttpResponse::Ok().json(pets),
+        Err(e) => {
+            log::error!("Failed to fetch pets: {}", e);
+            ErrorResponseBuilder::database_error()
+                .set_message(format!("Failed to fetch pets: {}", e))
+                .build()
+                .into()
+        }
+    }
+}
+
+#[actix_web::get("/{id}")]
+async fn get_pet_by_id(pets_table: web::Data<PetsTable>, pet_id: web::Path<u32>) -> HttpResponse {
+    match pets_table.get_pet_by_id(pet_id.into_inner()).await {
+        Ok(Some(pet)) => HttpResponse::Ok().json(pet),
+        Ok(None) => ErrorResponseBuilder::not_found()
+            .set_status("PET_NOT_FOUND")
+            .set_message("Pet not found")
+            .build()
+            .into(),
+        Err(e) => {
+            log::error!("Failed to fetch pet by ID: {}", e);
+            ErrorResponseBuilder::database_error()
+                .set_message(format!("Failed to fetch pet by ID: {}", e))
+                .build()
+                .into()
+        }
+    }
+}
+
 pub fn routes() -> Scope {
-    Scope::new("/pets").service(create_pet)
+    Scope::new("/pets")
+        .service(create_pet)
+        .service(get_pets)
+        .service(get_pet_by_id)
 }

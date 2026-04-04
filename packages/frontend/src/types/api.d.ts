@@ -57,6 +57,14 @@ declare global {
         // POST /pets
         export type CreatePetError = ResponseError<modes.CreatePetErrorModes>;
         export type CreatePetResponse = Objects.Pet;
+
+        // GET /pets
+        export type GetPetsError = ResponseError<"DATABASE_ERROR">;
+        export type GetPetsResponse = Objects.Pet[];
+
+        // GET /pets/:id
+        export type GetPetByIdError = ResponseError<modes.GetPetByIdErrorModes>;
+        export type GetPetByIdResponse = Objects.Pet;
     }
 
     namespace Objects {

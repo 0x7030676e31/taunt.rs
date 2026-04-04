@@ -179,4 +179,17 @@ impl PetsTable {
         .fetch_one(&self.pool)
         .await
     }
+
+    pub async fn get_all_pets(&self) -> Result<Vec<Pet>, sqlx::Error> {
+        sqlx::query_as::<_, Pet>("SELECT * FROM pets")
+            .fetch_all(&self.pool)
+            .await
+    }
+
+    pub async fn get_pet_by_id(&self, pet_id: u32) -> Result<Option<Pet>, sqlx::Error> {
+        sqlx::query_as::<_, Pet>("SELECT * FROM pets WHERE pet_id = ?")
+            .bind(pet_id as i64)
+            .fetch_optional(&self.pool)
+            .await
+    }
 }
