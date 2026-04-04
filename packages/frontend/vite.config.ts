@@ -2,8 +2,8 @@ import { defineConfig } from "vite";
 import solid from "vite-plugin-solid";
 import path from "node:path";
 
-export default defineConfig({
-    base: '/public/',
+export default defineConfig(({ command }) => ({
+    base: command === "build" ? "/public/" : "/",
     plugins: [solid()],
     resolve: {
         alias: {
@@ -11,4 +11,4 @@ export default defineConfig({
             palette: path.resolve(__dirname, "src/palette.scss"),
         }
     }
-})
+}));

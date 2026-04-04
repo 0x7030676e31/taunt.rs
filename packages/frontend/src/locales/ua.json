@@ -129,5 +129,14 @@
     "pets.noPets": "Не знайдено тварин, що відповідають критеріям.",
     "pets.status.available": "Доступні",
     "pets.status.pending": "Очікують",
-    "pets.status.adopted": "Всиновлені"
+    "pets.status.adopted": "Всиновлені",
+    "donations.title": "Пожертви Спільноти",
+    "donations.subtitle": "Кожен внесок допомагає нам рятувати, лікувати та прилаштовувати більше тварин.",
+    "donations.empty": "Поки що немає зафіксованих пожертв.",
+    "donations.success.title": "Дякуємо за підтримку наших тварин!",
+    "donations.success.body": "Вашу пожертву отримано, і вона вже працює на добру справу.",
+    "donationSuccess.processingTitle": "Завершуємо Вашу Пожертву",
+    "donationSuccess.processingBody": "Зачекайте, будь ласка, ми безпечно зберігаємо дані вашої пожертви.",
+    "donationSuccess.failedTitle": "Не вдалося завершити",
+    "donationSuccess.fallbackCta": "Повернутися до пожертв"
 }
