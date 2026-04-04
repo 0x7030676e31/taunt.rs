@@ -14,9 +14,13 @@ import team4 from "@/assets/team4.jpg";
 import team5 from "@/assets/team5.jpg";
 import donate1 from "@/assets/cat_donate1.jpeg";
 import donate2 from "@/assets/cat_donate2.jpeg";
+import adopt1 from "@/assets/adopt1.jpeg";
+import adopt2 from "@/assets/adopt2.jpeg";
+import adopt3 from "@/assets/adopt3.jpeg";
 
 export default function Home() {
     const [t] = useI18n();
+    const currentYear = new Date().getFullYear();
 
     const AMOUNTS = [100, 500, 1000];
     const [selectedAmount, setSelectedAmount] = createSignal<number | "custom">(AMOUNTS[1]);
@@ -208,6 +212,32 @@ export default function Home() {
                 </div>
             </div>
 
+            <section class={styles.adoptionSpotlightSection}>
+                <div class={styles.adoptionSpotlightInner}>
+                    <div class={styles.adoptionCopy}>
+                        <p class={styles.adoptionEyebrow}>{t("navbar.adopt")}</p>
+                        <h2 class={styles.adoptionTitle}>{t("home.adopt.title")}</h2>
+                        <p class={styles.adoptionSubtitle}>{t("home.adopt.subtitle")}</p>
+                        <p class={styles.adoptionStory}>{t("home.adopt.story")}</p>
+                        <a href="/adopt" class={styles.adoptCtaBtn}>
+                            {t("home.adopt.cta")}
+                        </a>
+                    </div>
+
+                    <div class={styles.adoptionPhotoGrid}>
+                        <article class={styles.adoptionPhotoCard}>
+                            <img src={adopt1} alt="Adoptable pet portrait 1" class={styles.adoptionPhoto} />
+                        </article>
+                        <article class={`${styles.adoptionPhotoCard} ${styles.featuredPhotoCard}`}>
+                            <img src={adopt2} alt="Adoptable pet portrait 2" class={styles.adoptionPhoto} />
+                        </article>
+                        <article class={styles.adoptionPhotoCard}>
+                            <img src={adopt3} alt="Adoptable pet portrait 3" class={styles.adoptionPhoto} />
+                        </article>
+                    </div>
+                </div>
+            </section>
+
             <Modal
                 isOpen={isConfirmModalOpen()}
                 onClose={() => setIsConfirmModalOpen(false)}
@@ -229,7 +259,7 @@ export default function Home() {
                 onClose={() => setIsSuccessModalOpen(false)}
                 title={t("home.donate.success")}
             >
-                <p style={{ "font-size": "2rem", "font-weight": "bold", "color": "#a6d189", "text-align": "center" }}>
+                <p class={styles.successAmount}>
                     ₴{finalAmountToSubmit()}
                 </p>
                 <div class={styles.modalActions}>
@@ -238,6 +268,13 @@ export default function Home() {
                     </button>
                 </div>
             </Modal>
+
+            <footer class={styles.siteFooter}>
+                <div class={styles.footerInner}>
+                    <p class={styles.footerTagline}>{t("home.footer.tagline")}</p>
+                    <p class={styles.footerRights}>{t("home.footer.rights", { year: currentYear })}</p>
+                </div>
+            </footer>
 
         </div>
     );

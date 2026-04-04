@@ -239,6 +239,231 @@
     }
 }
 
+.adoptionSpotlightSection {
+    width: 100%;
+    background: #ffffff;
+    padding: clamp(2.5rem, 6vw, 5rem) clamp(1rem, 5vw, 5rem);
+    box-sizing: border-box;
+}
+
+.adoptionSpotlightInner {
+    max-width: 1160px;
+    margin: 0 auto;
+    display: grid;
+    gap: clamp(1.5rem, 4vw, 3rem);
+    grid-template-columns: 1fr;
+
+    @media (min-width: 960px) {
+        grid-template-columns: minmax(300px, 1fr) minmax(420px, 1.35fr);
+        align-items: center;
+    }
+}
+
+.adoptionCopy {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.adoptionEyebrow {
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-family: "Roboto Mono", monospace;
+    font-size: 0.82rem;
+    color: color.adjust($secondary, $lightness: 12%);
+}
+
+.adoptionTitle {
+    margin: 0;
+    color: $secondary;
+    text-transform: uppercase;
+    font-size: clamp(2rem, 4.5vw, 3.3rem);
+    line-height: 1;
+    letter-spacing: 0.02em;
+    font-family: "Climate Crisis", sans-serif;
+}
+
+.adoptionSubtitle {
+    margin: 0;
+    color: color.adjust($accent, $lightness: -18%);
+    font-family: "Lato", sans-serif;
+    font-size: clamp(1.15rem, 2.5vw, 1.55rem);
+    font-weight: 900;
+}
+
+.adoptionStory {
+    margin: 0;
+    color: $text;
+    font-family: "Lato", sans-serif;
+    font-size: clamp(1rem, 2vw, 1.15rem);
+    line-height: 1.65;
+    max-width: 52ch;
+}
+
+.adoptCtaBtn {
+    margin-top: 0.75rem;
+    align-self: flex-start;
+    text-decoration: none;
+    background: linear-gradient(120deg, color.adjust($accent, $lightness: -8%), $secondary 70%);
+    color: #ffffff;
+    border-radius: 999px;
+    padding: 0.82rem 1.4rem;
+    font-family: "Roboto Mono", monospace;
+    font-size: 0.9rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+
+    &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 26px rgba(107, 62, 30, 0.2);
+    }
+}
+
+.adoptionPhotoGrid {
+    display: grid;
+    width: 100%;
+    gap: clamp(0.9rem, 2.5vw, 1.4rem);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-areas:
+        "one two"
+        "three two";
+}
+
+.adoptionPhotoCard {
+    margin: 0;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow:
+        0 10px 25px rgba(0, 0, 0, 0.13),
+        inset 0 0 0 2px rgba(255, 255, 255, 0.55);
+    aspect-ratio: 2 / 3;
+    background: #ececec;
+
+    &:nth-child(1) {
+        grid-area: one;
+    }
+
+    &:nth-child(3) {
+        grid-area: three;
+    }
+}
+
+.featuredPhotoCard {
+    grid-area: two;
+    aspect-ratio: 2 / 3;
+}
+
+.adoptionPhoto {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+    transition: transform 0.35s ease;
+
+    &:hover {
+        transform: scale(1.04);
+    }
+}
+
+.modalActions {
+    margin-top: 1.25rem;
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.65rem;
+}
+
+.modalBtnPrimary,
+.modalBtnSecondary {
+    border-radius: 10px;
+    font-family: "Lato", sans-serif;
+    font-size: 0.95rem;
+    font-weight: 800;
+    padding: 0.7rem 1.2rem;
+    border: none;
+    cursor: pointer;
+    transition:
+        transform 0.15s ease,
+        background-color 0.2s ease,
+        color 0.2s ease,
+        opacity 0.2s ease;
+
+    &:active {
+        transform: scale(0.97);
+    }
+}
+
+.modalBtnPrimary {
+    background-color: $accent;
+    color: #ffffff;
+
+    &:hover {
+        background-color: color.adjust($accent, $lightness: -8%);
+    }
+}
+
+.modalBtnSecondary {
+    background-color: #ffffff;
+    border: 2px solid color.adjust($background0, $lightness: 24%);
+    color: $text;
+
+    &:hover {
+        background-color: color.adjust($background1, $lightness: -2%);
+    }
+}
+
+.successAmount {
+    font-size: 2rem;
+    font-weight: 900;
+    color: $green;
+    text-align: center;
+    margin: 0;
+}
+
+.siteFooter {
+    width: 100%;
+    background:
+        radial-gradient(circle at 15% 10%, rgba(239, 159, 118, 0.28) 0%, rgba(239, 159, 118, 0) 40%),
+        linear-gradient(120deg, color.adjust($secondary, $lightness: -10%), color.adjust($text, $lightness: -18%));
+    color: #fefaf3;
+    padding: clamp(1.8rem, 4vw, 2.6rem) clamp(1rem, 5vw, 5rem);
+    box-sizing: border-box;
+}
+
+.footerInner {
+    margin: 0 auto;
+    max-width: 1160px;
+    display: grid;
+    gap: 0.8rem;
+    justify-items: start;
+
+    @media (min-width: 860px) {
+        grid-template-columns: 1fr auto;
+        align-items: center;
+        gap: 1.2rem;
+    }
+}
+
+.footerTagline,
+.footerRights {
+    margin: 0;
+    font-family: "Lato", sans-serif;
+}
+
+.footerTagline {
+    font-size: clamp(1rem, 2.2vw, 1.2rem);
+    font-weight: 700;
+}
+
+.footerRights {
+    opacity: 0.9;
+    font-size: 0.95rem;
+}
+
 .donateImages {
     position: relative;
     display: flex;
