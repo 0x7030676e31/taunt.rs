@@ -4,7 +4,7 @@
     "Register": "Register",
     "navbar.home": "Home",
     "navbar.adopt": "Adopt",
-    "navbar.donate": "Donate",
+    "navbar.donate": "Donations",
     "navbar.dashboard": "Dashboard",
     "auth.login": "Login",
     "auth.register": "Register",
@@ -67,5 +67,14 @@
     "home.donate.message": "Leave a Message (Optional)",
     "home.donate.submit": "Donate Now",
     "home.donate.confirm_omitted": "Are you sure you want to donate without leaving a name or message? It is nice to know who our heroes are!",
-    "home.donate.success": "Thank you for your generous donation!"
+    "home.donate.success": "Thank you for your generous donation!",
+    "dashboard.welcome": "Dashboard",
+    "dashboard.petsList": "List of Pets",
+    "dashboard.petsListDesc": "View and manage all pets in the system.",
+    "dashboard.addPet": "Add a Pet",
+    "dashboard.addPetDesc": "Register a new pet into the shelter database.",
+    "dashboard.applicationsList": "List of Applications",
+    "dashboard.applicationsListDesc": "Review and process adoption applications.",
+    "dashboard.latestApplications": "Latest Applications",
+    "dashboard.noRecent": "No recent applications to show."
 }

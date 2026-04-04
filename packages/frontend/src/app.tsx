@@ -11,8 +11,6 @@ import Pet from "./pages/pet";
 import Pets from "./pages/pets";
 import Application from "./pages/application";
 import Applications from "./pages/applications";
-import Volunteer from "./pages/volunteer";
-import Volunteers from "./pages/volunteers";
 
 import Navbar from "./common/navbar";
 import Layout from "./common/layout";
@@ -23,11 +21,9 @@ import Notifications from "./notifications";
 
 const AppLayout = (props: { children?: JSX.Element }) => {
     return (
-        <AccountContextProvider>
-            <Navbar>
-                {props.children}
-            </Navbar>
-        </AccountContextProvider>
+        <Navbar>
+            {props.children}
+        </Navbar>
     )
 }
 
@@ -39,15 +35,24 @@ const DashboardLayout = (props: { children?: JSX.Element }) => {
     )
 }
 
+const Root = (props: { children?: JSX.Element }) => {
+    return (
+        <AccountContextProvider>
+            {props.children}
+        </AccountContextProvider>
+    )
+}
+
 export default function App() {
     return (
         <I18nProvider>
             <Notifications />
-            <Router>
+            <Router root={Root}>
                 <Route component={AppLayout}>
                     <Route path="/" component={Home} />
                     <Route path="/donate" component={Donate} />
                     <Route path="/adopt" component={Adopt} />
+                    <Route path="/adopt/:id" component={Adopt} />
                     <Route path="/login" component={Login} />
                     <Route path="/donations" component={Donations} />
                 </Route>

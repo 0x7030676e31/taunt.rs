@@ -4,7 +4,7 @@
     "Register": "Реєстрація",
     "navbar.home": "Головна",
     "navbar.adopt": "Прихистити",
-    "navbar.donate": "Підтримати",
+    "navbar.donate": "Пожертви",
     "navbar.dashboard": "Панель керування",
     "auth.login": "Увійти",
     "auth.register": "Реєстрація",
@@ -67,5 +67,14 @@
     "home.donate.message": "Залиште повідомлення (Необов'язково)",
     "home.donate.submit": "Пожертвувати",
     "home.donate.confirm_omitted": "Ви впевнені, що хочете пожертвувати без вказання імені або повідомлення? Нам завжди приємно знати наших героїв!",
-    "home.donate.success": "Дякуємо за вашу щедру пожертву!"
+    "home.donate.success": "Дякуємо за вашу щедру пожертву!",
+    "dashboard.welcome": "Панель керування",
+    "dashboard.petsList": "Список тварин",
+    "dashboard.petsListDesc": "Перегляд та керування тваринами в системі.",
+    "dashboard.addPet": "Додати тварину",
+    "dashboard.addPetDesc": "Зареєструвати нову тварину в базі притулку.",
+    "dashboard.applicationsList": "Список заявок",
+    "dashboard.applicationsListDesc": "Перегляд та обробка заявок на усиновлення.",
+    "dashboard.latestApplications": "Останні заявки",
+    "dashboard.noRecent": "Немає недавніх заявок."
 }

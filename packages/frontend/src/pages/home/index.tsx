@@ -64,7 +64,7 @@ export default function Home() {
             <div class={styles.catContainer}>
                 <img src={cat} alt="Cute cat" class={styles.catImage} />
                 <div class={styles.overlay}>
-                    <div class={styles.supportBtn}>
+                    <div class={styles.supportBtn} onClick={() => document.getElementById('donateSection')?.scrollIntoView({ behavior: 'smooth' })}>
                         <div class={styles.btnIcon}>
                             <svg viewBox="0 0 24 24">
                                 <path
@@ -105,7 +105,7 @@ export default function Home() {
                 </div>
             </div>
 
-            <div class={styles.donateSection}>
+            <div id="donateSection" class={styles.donateSection}>
                 <h2 class={styles.sectionTitle}>{t("home.donate")}</h2>
                 <div class={styles.aboutBlock}>
                     <p class={styles.aboutText}>{t("home.donate.text")}</p>
