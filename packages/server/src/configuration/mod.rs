@@ -475,7 +475,21 @@ impl ConfigurationError {
 }
 
 impl ConfigurationOptions {
-    /// Only the default values
+    pub fn all_missing() -> Self {
+        ConfigurationOptions {
+            configuration_file_path: ConfigurationOption::missing(),
+            log_level: ConfigurationOption::missing(),
+            port: ConfigurationOption::missing(),
+            host: ConfigurationOption::missing(),
+            database_url: ConfigurationOption::missing(),
+            database_key: ConfigurationOption::missing(),
+            stripe_api_key: ConfigurationOption::missing(),
+            captcha_private_key: ConfigurationOption::missing(),
+            path_to_static_assets: ConfigurationOption::missing(),
+        }
+    }
+
+    /// Only the default values (or some mockups if the `dev` feature is on)
     pub fn just_the_defaults() -> Self {
         ConfigurationOptions {
             configuration_file_path: ConfigurationOption::missing(),
@@ -678,7 +692,7 @@ pub fn build() -> Result<AppConfiguration, ConfigurationError> {
     let env_options = env_vars.into();
     let config_options = config_file::parse(configuration_file_path)?
         .map(Into::into)
-        .unwrap_or(ConfigurationOptions::just_the_defaults());
+        .unwrap_or(ConfigurationOptions::all_missing());
     let cli_options = cli_args.into();
     ConfigurationOptions::just_the_defaults()
         .override_with(env_options)
