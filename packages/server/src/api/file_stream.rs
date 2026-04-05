@@ -7,9 +7,9 @@ use std::{
 };
 
 use actix_web::{
-    Responder,
     body::SizedStream,
     web::{Bytes, BytesMut},
+    Responder,
 };
 use futures_util::Stream;
 
